@@ -192,7 +192,7 @@
       "kind":"Storage"
     },
     {
-      "name": "[parameters('adAvailabilitySetName')]",
+      "name": "[variables('adAvailabilitySetName')]",
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]"
@@ -224,7 +224,7 @@
       }
     },
     {
-      "name": "[parameters('adFirstDCNicName')]",
+      "name": "[variables('adFirstDCNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
@@ -247,7 +247,7 @@
       }
     },
     {
-      "name": "[parameters('adNextDCNicName')]",
+      "name": "[variables('adNextDCNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
@@ -276,15 +276,15 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',parameters('adFirstDCNicName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('adFirstDCNicName'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('adVMSize')]"
         },
         "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]"
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
         },
         "osProfile": {
           "computerName": "[parameters('adFirstDCVMName')]",
@@ -293,8 +293,8 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "[parameters('imagePublisher')]",
-            "offer": "[parameters('imageOffer')]",
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
             "sku": "[parameters('imageSKU')]",
             "version": "latest"
           },
@@ -322,7 +322,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('adFirstDCNicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adFirstDCNicName'))]"
             }
           ]
         }
@@ -400,7 +400,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/',parameters('adNextDCNicName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/',variables('adNextDCNicName'))]",
         "Microsoft.Resources/deployments/UpdateVNetDNS1"
       ],
       "properties": {
@@ -411,7 +411,7 @@
         },
         "parameters": {
           "nicName": {
-            "value": "[parameters('adNextDCNicName')]"
+            "value": "[variables('adNextDCNicName')]"
           },
           "ipConfigurations": {
             "value": [
@@ -442,15 +442,15 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',parameters('adNextDCNicName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('adNextDCNicName'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('adVMSize')]"
         },
         "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]"
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
         },
         "osProfile": {
           "computerName": "[parameters('adNextDCVMName')]",
@@ -459,8 +459,8 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "[parameters('imagePublisher')]",
-            "offer": "[parameters('imageOffer')]",
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
             "sku": "[parameters('imageSKU')]",
             "version": "latest"
           },
@@ -488,7 +488,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',parameters('adNextDCNicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adNextDCNicName'))]"
             }
           ]
         }
