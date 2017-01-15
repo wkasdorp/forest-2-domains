@@ -14,14 +14,8 @@
     "adVMSize": {
       "value": "Standard_DS2_v2"
     },
-    "dnsPrefix": {
-      "value": "GEN-UNIQUE"
-    },
-    "publicIPAddressName": {
-      "value": "myPubIp"
-    },
     "domainName": {
-      "value": "mydomain.local"
+      "value": "contoso.com"
     }
   }
 }
