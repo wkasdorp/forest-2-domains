@@ -77,24 +77,6 @@
       },
       "defaultValue": "10.0.0.5"
     },
-    "publicIPAddressName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the public IP address used by the Load Balancer"
-      },
-      "defaultValue": "adpublicIP"
-    },
-    "publicIPAddressType": {
-      "type": "string",
-      "allowedValues": [
-        "Dynamic",
-        "Static"
-      ],
-      "metadata": {
-        "description": "The type of the public IP address used by the Load Balancer"
-      },
-      "defaultValue": "Dynamic"
-    },
     "adFirstDCVMName": {
       "type": "string",
       "metadata": {
@@ -203,20 +185,6 @@
         "description": "The DNS prefix for the public IP address used by the Load Balancer"
       }
     },
-    "FirstDCRDPPort": {
-      "type": "int",
-      "metadata": {
-        "description": "The public RDP port for the first DC"
-      },
-      "defaultValue": 3389
-    },
-    "NextDCRDPPort": {
-      "type": "int",
-      "metadata": {
-        "description": "The public RDP port for the additional DC"
-      },
-      "defaultValue": 13389
-    },
     "assetLocation": {
       "type": "string",
       "metadata": {
@@ -226,22 +194,12 @@
     }
   },
   "variables": {
-    "adLBFE": "LBFE",
-    "adLBBE": "LBBE",
-    "adFirstDCRDPNAT": "adFirstDCRDP",
-    "adNextDCRDPNAT": "adNextDCRDP",
-    "VnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-    "adSubnetRef": "[concat(variables('VnetID'),'/subnets/',parameters('adSubnetName'))]",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "adFirstDCNicId": "[resourceId('Microsoft.Network/networkInterfaces',parameters('adFirstDCNicName'))]",
     "adFirstDCIPConfigID": "[concat(variables('adFirstDCNicId'),'/ipConfigurations/ipconfig1')]",
     "adNextDCNicId": "[resourceId('Microsoft.Network/networkInterfaces',parameters('adNextDCNicName'))]",
     "adNextDCIPConfigID": "[concat(variables('adNextDCNicId'),'/ipConfigurations/ipconfig1')]",
-    "adLBName": "adLoadBalancer",
-    "adlbID": "[resourceId('Microsoft.Network/loadBalancers',variables('adLBName'))]",
-    "adlbFEConfigID": "[concat(variables('adlbID'),'/frontendIPConfigurations/',variables('adLBFE'))]",
-    "adFirstDCRDPNATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('adFirstDCRDPNAT'))]",
-    "adNextDCRDPNATRuleID": "[concat(variables('adlbID'),'/inboundNatRules/',variables('adNextDCRDPNAT'))]",
-    "adBEAddressPoolID": "[concat(variables('adlbID'),'/backendAddressPools/',variables('adLBBE'))]",
     "adFirstDCDataDisk": "ADFirstDCDataDisk",
     "adNextDCDataDisk": "ADNextDCDataDisk",
     "adDataDiskSize": 1000,
@@ -266,18 +224,6 @@
       },
       "sku":{"name":"[parameters('storageAccountType')]"},
       "kind":"Storage"
-    },
-    {
-      "name": "[parameters('publicIPAddressName')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2016-10-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "publicIPAllocationMethod": "[parameters('publicIPAddressType')]",
-        "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsPrefix')]"
-        }
-      }
     },
     {
       "name": "[parameters('adAvailabilitySetName')]",
@@ -312,65 +258,12 @@
       }
     },
     {
-      "name": "[variables('adLBName')]",
-      "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2016-10-01",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName'))]"
-      ],
-      "properties": {
-        "frontendIPConfigurations": [
-          {
-            "name": "[variables('adLBFE')]",
-            "properties": {
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName'))]"
-              }
-            }
-          }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "[variables('adLBBE')]"
-          }
-        ],
-        "inboundNatRules": [
-          {
-            "name": "[variables('adFirstDCRDPNAT')]",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[variables('adlbFEConfigID')]"
-              },
-              "protocol": "tcp",
-              "frontendPort": "[parameters('FirstDCRDPPort')]",
-              "backendPort": 3389,
-              "enableFloatingIP": false
-            }
-          },
-          {
-            "name": "[variables('adNextDCRDPNAT')]",
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[variables('adlbFEConfigID')]"
-              },
-              "protocol": "tcp",
-              "frontendPort": "[parameters('NextDCRDPPort')]",
-              "backendPort": 3389,
-              "enableFloatingIP": false
-            }
-          }
-        ]
-      }
-    },
-    {
       "name": "[parameters('adFirstDCNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/VNet",
-        "[concat('Microsoft.Network/loadBalancers/',variables('adLBName'))]"
+        "Microsoft.Resources/deployments/VNet"
       ],
       "properties": {
         "ipConfigurations": [
@@ -381,17 +274,7 @@
               "privateIPAddress": "[parameters('adFirstDCNicIPAddress')]",
               "subnet": {
                 "id": "[variables('adSubnetRef')]"
-              },
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[variables('adBEAddressPoolID')]"
-                }
-              ],
-              "loadBalancerInboundNatRules": [
-                {
-                  "id": "[variables('adFirstDCRDPNATRuleID')]"
-                }
-              ]
+              }
             }
           }
         ]
@@ -403,8 +286,7 @@
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/VNet",
-        "[concat('Microsoft.Network/loadBalancers/',variables('adLBName'))]"
+        "Microsoft.Resources/deployments/VNet"
       ],
       "properties": {
         "ipConfigurations": [
@@ -415,17 +297,7 @@
               "privateIPAddress": "[parameters('adNextDCNicIPAddress')]",
               "subnet": {
                 "id": "[variables('adSubnetRef')]"
-              },
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[variables('adBEAddressPoolID')]"
-                }
-              ],
-              "loadBalancerInboundNatRules": [
-                {
-                  "id": "[variables('adNextDCRDPNATRuleID')]"
-                }
-              ]
+              }
             }
           }
         ]
@@ -439,8 +311,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',parameters('adFirstDCNicName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]",
-        "[resourceId('Microsoft.Network/loadBalancers',variables('adLBName'))]"
+        "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -585,17 +456,7 @@
                   "privateIPAddress": "[parameters('adNextDCNicIPAddress')]",
                   "subnet": {
                     "id": "[variables('adSubnetRef')]"
-                  },
-                  "loadBalancerBackendAddressPools": [
-                    {
-                      "id": "[variables('adBEAddressPoolID')]"
-                    }
-                  ],
-                  "loadBalancerInboundNatRules": [
-                    {
-                      "id": "[variables('adNextDCRDPNATRuleID')]"
-                    }
-                  ]
+                  }
                 }
               }
             ]
@@ -616,8 +477,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
         "[resourceId('Microsoft.Network/networkInterfaces',parameters('adNextDCNicName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]",
-        "[resourceId('Microsoft.Network/loadBalancers',variables('adLBName'))]"
+        "[resourceId('Microsoft.Compute/availabilitySets', parameters('adAvailabilitySetName'))]"
       ],
       "properties": {
         "hardwareProfile": {

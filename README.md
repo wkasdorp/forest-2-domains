@@ -12,5 +12,8 @@ Click the button below to deploy.
     <img src="http://armviz.io/visualizebutton.png"/>
 </a>
 
-Credits: project initially copied from <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/active-directory-new-domain-ha-2-dc"> active-directory-new-domain-ha-2-dc</a> project in the Azure Quickstart templates.
+
+### Credits
+
+This project was initially copied from <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/active-directory-new-domain-ha-2-dc"> active-directory-new-domain-ha-2-dc</a> project in the Azure Quickstart templates.
 
