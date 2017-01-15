@@ -68,14 +68,14 @@
       "metadata": {
         "description": "The computer name of the first DC"
       },
-      "defaultValue": "adFirstDC"
+      "defaultValue": "dc1"
     },
     "adNextDCVMName": {
       "type": "string",
       "metadata": {
         "description": "The computer name of the additional DC"
       },
-      "defaultValue": "adNextDC"
+      "defaultValue": "dc2"
     },
     "adminUsername": {
       "type": "string",
@@ -155,6 +155,7 @@
   "variables": {
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
+    "adFirstDCPublicIPName": "[concat(parameters('adFirstDCVMName'),'PublicIP')]",
     "adFirstDCNicName": "[concat(parameters('adFirstDCVMName'),'Nic')]",
     "adFirstDCNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adFirstDCNicName'))]",
     "adFirstDCIPConfigID": "[concat(variables('adFirstDCNicId'),'/ipConfigurations/ipconfig1')]",
@@ -188,8 +189,8 @@
       "location": "[resourceGroup().location]",
       "properties": {
       },
-      "sku":{"name":"[parameters('storageAccountType')]"},
-      "kind":"Storage"
+      "sku": { "name": "[parameters('storageAccountType')]" },
+      "kind": "Storage"
     },
     {
       "name": "[variables('adAvailabilitySetName')]",
@@ -224,12 +225,29 @@
       }
     },
     {
+      "name": "[variables('adFirstDCPublicIPName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[concat('dc', uniqueString(resourceGroup().id))]"
+        }
+      }
+    },
+
+    {
       "name": "[variables('adFirstDCNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/VNet"
+        "Microsoft.Resources/deployments/VNet",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('adFirstDCPublicIPName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -240,6 +258,9 @@
               "privateIPAddress": "[parameters('adFirstDCNicIPAddress')]",
               "subnet": {
                 "id": "[variables('adSubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adFirstDCPublicIPName'))]"
               }
             }
           }
