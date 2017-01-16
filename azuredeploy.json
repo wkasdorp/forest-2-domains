@@ -149,7 +149,7 @@
       "metadata": {
         "description": "The location of resources such as templates and DSC modules that the script depends on."
       },
-  	  "defaultValue": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"
+      "defaultValue": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"
     }
   },
   "variables": {
@@ -490,6 +490,9 @@
                   "privateIPAddress": "[parameters('adNextDCNicIPAddress')]",
                   "subnet": {
                     "id": "[variables('adSubnetRef')]"
+                  },
+                  "publicIPAddress": {
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adNextDCPublicIPName'))]"
                   }
                 }
               }
@@ -657,6 +660,21 @@
           }
         }
       }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "name": "[concat(parameters('virtualNetworkName'), '/', parameters('adSubnetName'))]",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressPrefix": "[parameters('adSubnet')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('adNSGName'))]"
+        }
+      },
+      "dependsOn": [
+        "Microsoft.Resources/deployments/UpdateVNetDNS2"
+      ]
     }
   ]
 }
