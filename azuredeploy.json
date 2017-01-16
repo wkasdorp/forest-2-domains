@@ -134,8 +134,13 @@
     "imageSKU": {
       "type": "string",
       "defaultValue": "2012-R2-Datacenter",
+      "allowedValues": [
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "2016-Datacenter"
+      ],
       "metadata": {
-        "description": "Image SKU"
+        "description": "Windows Server Version"
       }
     },
     "domainName": {
@@ -234,15 +239,15 @@
       "properties": {
         "securityRules": [
           {
-            "name": "Inbound_Corporate_RDP",
+            "name": "Allow_Any_RDP",
             "properties": {
               "protocol": "TCP",
               "sourcePortRange": "*",
               "destinationPortRange": "3389",
-              "sourceAddressPrefix": "1.1.1.1/32",
+              "sourceAddressPrefix": "*",
               "destinationAddressPrefix": "*",
               "access": "Allow",
-              "priority": 100,
+              "priority": 200,
               "direction": "Inbound"
             }
           }
