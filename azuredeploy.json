@@ -155,6 +155,7 @@
   "variables": {
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
+    "adNSGName":  "[concat(parameters('adSubnetName'),'NSG')]",
     "adFirstDCPublicIPName": "[concat(parameters('adFirstDCVMName'),'PublicIP')]",
     "adFirstDCNicName": "[concat(parameters('adFirstDCVMName'),'Nic')]",
     "adFirstDCNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adFirstDCNicName'))]",
@@ -225,6 +226,32 @@
       }
     },
     {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('adNSGName')]",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Inbound_Corporate_RDP",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "1.1.1.1/32",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
+      ]
+    },
+    {
       "name": "[variables('adFirstDCPublicIPName')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
@@ -268,12 +295,28 @@
       }
     },
     {
+      "name": "[variables('adNextDCPublicIPName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[concat('dc', uniqueString(resourceGroup().id))]"
+        }
+      }
+    },
+    {
       "name": "[variables('adNextDCNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/VNet"
+        "Microsoft.Resources/deployments/VNet",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('adNextDCPublicIPName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -284,6 +327,9 @@
               "privateIPAddress": "[parameters('adNextDCNicIPAddress')]",
               "subnet": {
                 "id": "[variables('adSubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adNextDCPublicIPName'))]"
               }
             }
           }
