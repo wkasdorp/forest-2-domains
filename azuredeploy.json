@@ -263,7 +263,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[concat('dc', uniqueString(resourceGroup().id))]"
+          "domainNameLabel": "[concat(parameters('adFirstDCVMName'),'-',uniqueString(resourceGroup().id))]"
         }
       }
     },
@@ -306,7 +306,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[concat('dc', uniqueString(resourceGroup().id))]"
+          "domainNameLabel": "[concat(parameters('adNextDCVMName'),'-',uniqueString(resourceGroup().id))]"
         }
       }
     },
