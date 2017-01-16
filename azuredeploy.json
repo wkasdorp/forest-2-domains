@@ -155,11 +155,12 @@
   "variables": {
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
-    "adNSGName":  "[concat(parameters('adSubnetName'),'NSG')]",
+    "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
     "adFirstDCPublicIPName": "[concat(parameters('adFirstDCVMName'),'PublicIP')]",
     "adFirstDCNicName": "[concat(parameters('adFirstDCVMName'),'Nic')]",
     "adFirstDCNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adFirstDCNicName'))]",
     "adFirstDCIPConfigID": "[concat(variables('adFirstDCNicId'),'/ipConfigurations/ipconfig1')]",
+    "adNextDCPublicIPName": "[concat(parameters('adNextDCVMName'),'PublicIP')]",
     "adNextDCNicName": "[concat(parameters('adNextDCVMName'),'Nic')]",
     "adNextDCNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adNextDCNicName'))]",
     "adNextDCIPConfigID": "[concat(variables('adNextDCNicId'),'/ipConfigurations/ipconfig1')]",
