@@ -49,33 +49,33 @@
       },
       "defaultValue": "10.0.0.0/24"
     },
-    "adFirstDCNicIPAddress": {
+    "adRootDC1NicIPAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the first DC"
+        "description": "The IP address of the first forest root DC"
       },
       "defaultValue": "10.0.0.4"
     },
-    "adNextDCNicIPAddress": {
+    "adRootDC2NicIPAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the new additional DC"
+        "description": "The IP address of the second forest root DC"
       },
       "defaultValue": "10.0.0.5"
     },
-    "adFirstDCVMName": {
+    "adRootDC1VMName": {
       "type": "string",
       "metadata": {
-        "description": "The computer name of the first DC"
+        "description": "The computer name of the first DC of the root domain."
       },
-      "defaultValue": "dc1"
+      "defaultValue": "rootdc1"
     },
-    "adNextDCVMName": {
+    "adRootDC2VMName": {
       "type": "string",
       "metadata": {
-        "description": "The computer name of the additional DC"
+        "description": "The computer name of the second DC of the root domain."
       },
-      "defaultValue": "dc2"
+      "defaultValue": "rootdc2"
     },
     "adminUsername": {
       "type": "string",
@@ -161,16 +161,16 @@
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
-    "adFirstDCPublicIPName": "[concat(parameters('adFirstDCVMName'),'PublicIP')]",
-    "adFirstDCNicName": "[concat(parameters('adFirstDCVMName'),'Nic')]",
-    "adFirstDCNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adFirstDCNicName'))]",
-    "adFirstDCIPConfigID": "[concat(variables('adFirstDCNicId'),'/ipConfigurations/ipconfig1')]",
-    "adNextDCPublicIPName": "[concat(parameters('adNextDCVMName'),'PublicIP')]",
-    "adNextDCNicName": "[concat(parameters('adNextDCVMName'),'Nic')]",
-    "adNextDCNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adNextDCNicName'))]",
-    "adNextDCIPConfigID": "[concat(variables('adNextDCNicId'),'/ipConfigurations/ipconfig1')]",
-    "adFirstDCDataDisk": "[concat(parameters('adFirstDCVMName'),'DataDisk')]",
-    "adNextDCDataDisk": "[concat(parameters('adNextDCVMName'),'DataDisk')]",
+    "adRootDC1PublicIPName": "[concat(parameters('adRootDC1VMName'),'PublicIP')]",
+    "adRootDC1NicName": "[concat(parameters('adRootDC1VMName'),'Nic')]",
+    "adRootDC1NicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC1NicName'))]",
+    "adRootDC1IPConfigID": "[concat(variables('adRootDC1NicId'),'/ipConfigurations/ipconfig1')]",
+    "adRootDC2PublicIPName": "[concat(parameters('adRootDC2VMName'),'PublicIP')]",
+    "adRootDC2NicName": "[concat(parameters('adRootDC2VMName'),'Nic')]",
+    "adRootDC2NicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC2NicName'))]",
+    "adRootDC2IPConfigID": "[concat(variables('adRootDC2NicId'),'/ipConfigurations/ipconfig1')]",
+    "adRootDC1DataDisk": "[concat(parameters('adRootDC1VMName'),'DataDisk')]",
+    "adRootDC2DataDisk": "[concat(parameters('adRootDC2VMName'),'DataDisk')]",
     "adAvailabilitySetName": "adAvailabilitySet",
     "adDataDiskSize": 1000,
 
@@ -181,12 +181,12 @@
     "nicTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/nic.json')]",
     "vnetwithDNSTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/vnet-with-dns-server.json')]",
     "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/configureADNextDC.json')]",
-    "adFirstDCModulesURL": "[concat(parameters('assetLocation'),'/DSC/CreateADFirstDC.ps1.zip')]",
-    "adFirstDCConfigurationFunction": "CreateADFirstDC.ps1\\CreateADFirstDC",
-    "adNextDCPreparationModulesURL": "[concat(parameters('assetLocation'),'/DSC/PrepareADNextDC.ps1.zip')]",
-    "adNextDCPreparationFunction": "PrepareADNextDC.ps1\\PrepareADNextDC",
-    "adNextDCConfigurationModulesURL": "[concat(parameters('assetLocation'),'/DSC/ConfigureADNextDC.ps1.zip')]",
-    "adNextDCConfigurationFunction": "ConfigureADNextDC.ps1\\ConfigureADNextDC"
+    "adRootDC1ModulesURL": "[concat(parameters('assetLocation'),'/DSC/CreateADRootDC1.ps1.zip')]",
+    "adRootDC1ConfigurationFunction": "CreateADRootDC1.ps1\\CreateADRootDC1",
+    "adRootDC2PreparationModulesURL": "[concat(parameters('assetLocation'),'/DSC/PrepareADNextDC.ps1.zip')]",
+    "adRootDC2PreparationFunction": "PrepareADNextDC.ps1\\PrepareADNextDC",
+    "adRootDC2ConfigurationModulesURL": "[concat(parameters('assetLocation'),'/DSC/ConfigureADNextDC.ps1.zip')]",
+    "adRootDC2ConfigurationFunction": "ConfigureADNextDC.ps1\\ConfigureADNextDC"
   },
   "resources": [
     {
@@ -258,7 +258,7 @@
       ]
     },
     {
-      "name": "[variables('adFirstDCPublicIPName')]",
+      "name": "[variables('adRootDC1PublicIPName')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
@@ -268,19 +268,19 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[concat(parameters('adFirstDCVMName'),'-',uniqueString(resourceGroup().id))]"
+          "domainNameLabel": "[concat(parameters('adRootDC1VMName'),'-',uniqueString(resourceGroup().id))]"
         }
       }
     },
 
     {
-      "name": "[variables('adFirstDCNicName')]",
+      "name": "[variables('adRootDC1NicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "Microsoft.Resources/deployments/VNet",
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('adFirstDCPublicIPName'))]"
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('adRootDC1PublicIPName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -288,12 +288,12 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[parameters('adFirstDCNicIPAddress')]",
+              "privateIPAddress": "[parameters('adRootDC1NicIPAddress')]",
               "subnet": {
                 "id": "[variables('adSubnetRef')]"
               },
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adFirstDCPublicIPName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adRootDC1PublicIPName'))]"
               }
             }
           }
@@ -301,7 +301,7 @@
       }
     },
     {
-      "name": "[variables('adNextDCPublicIPName')]",
+      "name": "[variables('adRootDC2PublicIPName')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
       "apiVersion": "2015-06-15",
@@ -311,18 +311,18 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[concat(parameters('adNextDCVMName'),'-',uniqueString(resourceGroup().id))]"
+          "domainNameLabel": "[concat(parameters('adRootDC2VMName'),'-',uniqueString(resourceGroup().id))]"
         }
       }
     },
     {
-      "name": "[variables('adNextDCNicName')]",
+      "name": "[variables('adRootDC2NicName')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "Microsoft.Resources/deployments/VNet",
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('adNextDCPublicIPName'))]"
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('adRootDC2PublicIPName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -330,12 +330,12 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[parameters('adNextDCNicIPAddress')]",
+              "privateIPAddress": "[parameters('adRootDC2NicIPAddress')]",
               "subnet": {
                 "id": "[variables('adSubnetRef')]"
               },
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adNextDCPublicIPName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adRootDC2PublicIPName'))]"
               }
             }
           }
@@ -343,13 +343,13 @@
       }
     },
     {
-      "name": "[parameters('adFirstDCVMName')]",
+      "name": "[parameters('adRootDC1VMName')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('adFirstDCNicName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC1NicName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
       ],
       "properties": {
@@ -360,7 +360,7 @@
           "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
         },
         "osProfile": {
-          "computerName": "[parameters('adFirstDCVMName')]",
+          "computerName": "[parameters('adRootDC1VMName')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -382,9 +382,9 @@
           "dataDisks": [
             {
               "vhd": {
-                "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds0/', variables('adFirstDCDataDisk'),'-1.vhd')]"
+                "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds0/', variables('adRootDC1DataDisk'),'-1.vhd')]"
               },
-              "name": "[concat(parameters('adFirstDCVMName'),'-data-disk1')]",
+              "name": "[concat(parameters('adRootDC1VMName'),'-data-disk1')]",
               "caching": "None",
               "diskSizeGB": "[variables('adDataDiskSize')]",
               "lun": 0,
@@ -395,7 +395,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adFirstDCNicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC1NicName'))]"
             }
           ]
         }
@@ -404,10 +404,10 @@
         {
           "apiVersion": "2015-06-15",
           "type": "extensions",
-          "name": "adFirstDCEnablePSScript",
+          "name": "adRootDC1EnablePSScript",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('adFirstDCVMName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('adRootDC1VMName'))]"
           ],
           "properties": {
             "publisher": "Microsoft.Compute",
@@ -420,13 +420,13 @@
           }
         },
         {
-          "name": "[concat(parameters('adFirstDCVMName'),'/CreateADForest')]",
+          "name": "[concat(parameters('adRootDC1VMName'),'/CreateADForest')]",
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "apiVersion": "2016-03-30",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('adFirstDCVMName'))]",
-            "adFirstDCEnablePSScript"
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('adRootDC1VMName'))]",
+            "adRootDC1EnablePSScript"
           ],
           "properties": {
             "publisher": "Microsoft.Powershell",
@@ -434,8 +434,8 @@
             "typeHandlerVersion": "2.21",
             "autoUpgradeMinorVersion": true,
             "settings": {
-              "ModulesUrl": "[variables('adFirstDCModulesURL')]",
-              "ConfigurationFunction": "[variables('adFirstDCConfigurationFunction')]",
+              "ModulesUrl": "[variables('adRootDC1ModulesURL')]",
+              "ConfigurationFunction": "[variables('adRootDC1ConfigurationFunction')]",
               "Properties": {
                 "DomainName": "[parameters('domainName')]",
                 "AdminCreds": {
@@ -459,8 +459,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('adFirstDCVMName'),'/extensions/CreateADForest')]",
-        "adFirstDCEnablePSScript"
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('adRootDC1VMName'),'/extensions/CreateADForest')]",
+        "adRootDC1EnablePSScript"
       ],
       "properties": {
         "mode": "Incremental",
@@ -483,18 +483,18 @@
           },
           "DNSServerAddress": {
             "value": [
-              "[parameters('adFirstDCNicIPAddress')]"
+              "[parameters('adRootDC1NicIPAddress')]"
             ]
           }
         }
       }
     },
     {
-      "name": "UpdateNextDCNIC",
+      "name": "UpdateRootDC2NIC",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/',variables('adNextDCNicName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/',variables('adRootDC2NicName'))]",
         "Microsoft.Resources/deployments/UpdateVNetDNS1"
       ],
       "properties": {
@@ -505,7 +505,7 @@
         },
         "parameters": {
           "nicName": {
-            "value": "[variables('adNextDCNicName')]"
+            "value": "[variables('adRootDC2NicName')]"
           },
           "ipConfigurations": {
             "value": [
@@ -513,12 +513,12 @@
                 "name": "ipconfig1",
                 "properties": {
                   "privateIPAllocationMethod": "Static",
-                  "privateIPAddress": "[parameters('adNextDCNicIPAddress')]",
+                  "privateIPAddress": "[parameters('adRootDC2NicIPAddress')]",
                   "subnet": {
                     "id": "[variables('adSubnetRef')]"
                   },
                   "publicIPAddress": {
-                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adNextDCPublicIPName'))]"
+                    "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adRootDC2PublicIPName'))]"
                   }
                 }
               }
@@ -526,20 +526,20 @@
           },
           "dnsServers": {
             "value": [
-              "[parameters('adFirstDCNicIPAddress')]"
+              "[parameters('adRootDC1NicIPAddress')]"
             ]
           }
         }
       }
     },
     {
-      "name": "[parameters('adNextDCVMName')]",
+      "name": "[parameters('adRootDC2VMName')]",
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('adNextDCNicName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC2NicName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
       ],
       "properties": {
@@ -550,7 +550,7 @@
           "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
         },
         "osProfile": {
-          "computerName": "[parameters('adNextDCVMName')]",
+          "computerName": "[parameters('adRootDC2VMName')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -572,9 +572,9 @@
           "dataDisks": [
             {
               "vhd": {
-                "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds1/', variables('adNextDCDataDisk'),'-1.vhd')]"
+                "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds1/', variables('adRootDC2DataDisk'),'-1.vhd')]"
               },
-              "name": "[concat(parameters('adNextDCVMName'),'-data-disk1')]",
+              "name": "[concat(parameters('adRootDC2VMName'),'-data-disk1')]",
               "caching": "None",
               "diskSizeGB": "[variables('adDataDiskSize')]",
               "lun": 0,
@@ -585,7 +585,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adNextDCNicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC2NicName'))]"
             }
           ]
         }
@@ -594,10 +594,10 @@
         {
           "apiVersion": "2015-06-15",
           "type": "extensions",
-          "name": "adNextDCEnablePSScript",
+          "name": "adRootDC2EnablePSScript",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('adNextDCVMName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('adRootDC2VMName'))]"
           ],
           "properties": {
             "publisher": "Microsoft.Compute",
@@ -613,11 +613,11 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('adNextDCVMName'),'/PrepareNextDC')]",
+      "name": "[concat(parameters('adRootDC2VMName'),'/PrepareNextDC')]",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('adNextDCVMName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('adRootDC2VMName'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
@@ -628,18 +628,18 @@
           "ModulesUrl": "[variables('adNextDCPreparationModulesURL')]",
           "ConfigurationFunction": "[variables('adNextDCPreparationFunction')]",
           "Properties": {
-            "DNSServer": "[parameters('adFirstDCNicIPAddress')]"
+            "DNSServer": "[parameters('adRootDC1NicIPAddress')]"
           }
         }
       }
     },
     {
-      "name": "ConfiguringBackupADDomainController",
+      "name": "ConfiguringRootDC2",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/',parameters('adNextDCVMName'),'/extensions/PrepareNextDC')]",
-        "Microsoft.Resources/deployments/UpdateNextDCNIC"
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('adRootDC2VMName'),'/extensions/PrepareNextDC')]",
+        "Microsoft.Resources/deployments/UpdateRootDC2NIC"
       ],
       "properties": {
         "mode": "Incremental",
@@ -649,7 +649,7 @@
         },
         "parameters": {
           "adNextDCVMName": {
-            "value": "[parameters('adNextDCVMName')]"
+            "value": "[parameters('adRootDC2VMName')]"
           },
           "location": {
             "value": "[resourceGroup().location]"
@@ -677,7 +677,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
-        "Microsoft.Resources/deployments/ConfiguringBackupADDomainController"
+        "Microsoft.Resources/deployments/ConfiguringRootDC2"
       ],
       "properties": {
         "mode": "Incremental",
@@ -700,8 +700,8 @@
           },
           "DNSServerAddress": {
             "value": [
-              "[parameters('adFirstDCNicIPAddress')]",
-              "[parameters('adNextDCNicIPAddress')]"
+              "[parameters('adRootDC1NicIPAddress')]",
+              "[parameters('adRootDC2NicIPAddress')]"
             ]
           }
         }
