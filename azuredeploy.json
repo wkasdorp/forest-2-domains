@@ -664,10 +664,10 @@
             "value": "[parameters('domainName')]"
           },
           "adNextDCConfigurationFunction": {
-            "value": "[variables('adADRootDC2ConfigurationFunction')]"
+            "value": "[variables('adRootDC2ConfigurationFunction')]"
           },
           "adNextDCConfigurationModulesURL": {
-            "value": "[variables('adADRootDC2ConfigurationModulesURL')]"
+            "value": "[variables('adRootDC2ConfigurationModulesURL')]"
           }
         }
       }
