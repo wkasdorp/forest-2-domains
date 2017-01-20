@@ -626,7 +626,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "ModulesUrl": "[variables('adRootDC2PreparationModulesURL')]",
-          "ConfigurationFunction": "[variables('adNextDCPreparationFunction')]",
+          "ConfigurationFunction": "[variables('adRootDC2PreparationFunction')]",
           "Properties": {
             "DNSServer": "[parameters('adRootDC1NicIPAddress')]"
           }
@@ -664,10 +664,10 @@
             "value": "[parameters('domainName')]"
           },
           "adNextDCConfigurationFunction": {
-            "value": "[variables('adNextDCConfigurationFunction')]"
+            "value": "[variables('adADRootDC2ConfigurationFunction')]"
           },
           "adNextDCConfigurationModulesURL": {
-            "value": "[variables('adNextDCConfigurationModulesURL')]"
+            "value": "[variables('adADRootDC2ConfigurationModulesURL')]"
           }
         }
       }
