@@ -625,7 +625,7 @@
         "typeHandlerVersion": "2.21",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "ModulesUrl": "[variables('adNextDCPreparationModulesURL')]",
+          "ModulesUrl": "[variables('adRootDC2PreparationModulesURL')]",
           "ConfigurationFunction": "[variables('adNextDCPreparationFunction')]",
           "Properties": {
             "DNSServer": "[parameters('adRootDC1NicIPAddress')]"
