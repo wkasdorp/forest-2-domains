@@ -590,7 +590,27 @@
             }
           ]
         }
-      }
+      },
+      "resources": [
+        {
+          "apiVersion": "2015-06-15",
+          "type": "extensions",
+          "name": "adNextDCEnablePSScript",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('adNextDCVMName'))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Compute",
+            "type": "CustomScriptExtension",
+            "typeHandlerVersion": "1.8",
+            "autoUpgradeMinorVersion": true,
+            "protectedSettings": {
+              "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -encodedcommand cwBlAHQALQBlAHgAZQBjAHUAdABpAG8AbgBwAG8AbABpAGMAeQAgAHUAbgByAGUAcwB0AHIAaQBjAHQAZQBkAA=="
+            }
+          }
+        }
+      ]
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
