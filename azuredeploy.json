@@ -310,6 +310,7 @@
         "Microsoft.Resources/deployments/VNet"
       ]
     },
+
     {
       "name": "[variables('adRootDC1PublicIPName')]",
       "type": "Microsoft.Network/publicIPAddresses",
@@ -353,6 +354,7 @@
         ]
       }
     },
+
     {
       "name": "[variables('adRootDC2PublicIPName')]",
       "type": "Microsoft.Network/publicIPAddresses",
@@ -395,6 +397,94 @@
         ]
       }
     },
+
+    {
+      "name": "[variables('adChildDC1PublicIPName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[concat(parameters('ChildDC1Name'),'-',uniqueString(resourceGroup().id))]"
+        }
+      }
+    },
+    {
+      "name": "[variables('adChildDC1NicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('adChildDC1PublicIPName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[parameters('ChildDC1IPAddress')]",
+              "subnet": {
+                "id": "[variables('adSubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adChildDC1PublicIPName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+
+    {
+      "name": "[variables('adChildDC2PublicIPName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
+      ],
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[concat(parameters('ChildDC2Name'),'-',uniqueString(resourceGroup().id))]"
+        }
+      }
+    },
+    {
+      "name": "[variables('adChildDC2NicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('adChildDC2PublicIPName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[parameters('ChildDC2IPAddress')]",
+              "subnet": {
+                "id": "[variables('adSubnetRef')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adChildDC2PublicIPName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+
+
     {
       "name": "[parameters('RootDC1Name')]",
       "type": "Microsoft.Compute/virtualMachines",
@@ -753,7 +843,7 @@
           },
           "DNSServerAddress": {
             "value": [
-              "[parameters('RootDC1IPAddress`')]",
+              "[parameters('RootDC1IPAddress')]",
               "[parameters('RootDC2IPAddress')]"
             ]
           }
