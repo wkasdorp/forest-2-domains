@@ -11,7 +11,7 @@
     "adminPassword": {
       "value": "GEN-PASSWORD"
     },
-    "adVMSize": {
+    "VMSize": {
       "value": "Standard_DS2_v2"
     },
     "domainName": {
