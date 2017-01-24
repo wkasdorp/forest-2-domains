@@ -1,0 +1,304 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newStorageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the new storage account created to store the VMs disks"
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ],
+      "metadata": {
+        "description": "The type of the Storage Account created"
+      },
+      "defaultValue": "Premium_LRS"
+    },
+    "virtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Virtual Network to Create"
+      },
+      "defaultValue": "adVNET"
+    },
+    "virtualNetworkAddressRange": {
+      "type": "string",
+      "metadata": {
+        "description": "The address range of the new VNET in CIDR format"
+      },
+      "defaultValue": "10.0.0.0/16"
+    },
+    "adSubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the subnet created in the new VNET"
+      },
+      "defaultValue": "adSubnet"
+    },
+    "adSubnet": {
+      "type": "string",
+      "metadata": {
+        "description": "The address range of the subnet created in the new VNET"
+      },
+      "defaultValue": "10.0.0.0/24"
+    },
+    "DomainName": {
+      "type": "string",
+      "metadata": {
+        "description": "Full name for the forest root domain"
+      },
+      "default value": "contoso.com"
+    },
+    "RootDC1Name": {
+      "type": "string",
+      "metadata": {
+        "description": "The computer name of the first DC of the root domain."
+      },
+      "defaultValue": "rootdc1"
+    },
+    "RootDC1IPAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The IP address of the first DC of the root domain"
+      },
+      "defaultValue": "10.0.0.4"
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the admin account for the Domain"
+      },
+      "defaultValue": "adAdministrator"
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password for the Administrator account of the new VM and Domain"
+      }
+    },
+    "VMSize": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_D1",
+        "Standard_DS1",
+        "Standard_D2",
+        "Standard_DS2",
+        "Standard_D3",
+        "Standard_DS3",
+        "Standard_D4",
+        "Standard_DS4",
+        "Standard_D11",
+        "Standard_DS11",
+        "Standard_D12",
+        "Standard_DS12",
+        "Standard_D13",
+        "Standard_DS13",
+        "Standard_D14",
+        "Standard_DS14",
+        "Standard_D1_v2",
+        "Standard_DS1_v2",
+        "Standard_D2_v2",
+        "Standard_DS2_v2",
+        "Standard_D3_v2",
+        "Standard_DS3_v2",
+        "Standard_D4_v2",
+        "Standard_DS4_v2",
+        "Standard_D11_v2",
+        "Standard_DS11_v2",
+        "Standard_D12_v2",
+        "Standard_DS12_v2",
+        "Standard_D13_v2",
+        "Standard_DS13_v2",
+        "Standard_D14_v2",
+        "Standard_DS14_v2"
+      ],
+      "metadata": {
+        "description": "The size of the VM Created"
+      },
+      "defaultValue": "Standard_DS2_v2"
+    },
+    "imageSKU": {
+      "type": "string",
+      "defaultValue": "2012-R2-Datacenter",
+      "allowedValues": [
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "2016-Datacenter"
+      ],
+      "metadata": {
+        "description": "Windows Server Version. "
+      }
+    },
+    "assetLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of resources such as templates and DSC modules that the script depends on."
+      },
+      "defaultValue": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"
+    }
+  },
+  "variables": {
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
+    "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
+
+    "adRootDC1PublicIPName": "[concat(parameters('RootDC1Name'),'PublicIP')]",
+    "adRootDC1NicName": "[concat(parameters('RootDC1Name'),'Nic')]",
+    "adRootDC1NicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC1NicName'))]",
+    "adRootDC1IPConfigID": "[concat(variables('adRootDC1NicId'),'/ipConfigurations/ipconfig1')]",
+    "adAvailabilitySetName": "adAvailabilitySet",
+
+    "newVMTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/CreateAndPrepnewVM.json')]",
+    "vnetTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/vnet.json')]",
+    "nicTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/nic.json')]",
+    "vnetwithDNSTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/vnet-with-dns-server.json')]",
+    "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/configureADNextDC.json')]",
+
+    "adRootDC1ModulesURL": "[concat(parameters('assetLocation'),'/DSC/CreateADRootDC1.ps1.zip')]",
+    "adRootDC1ConfigurationFunction": "CreateADRootDC1.ps1\\CreateADRootDC1"
+  },
+  "resources": [
+    {
+      "name": "[parameters('newStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2016-05-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+      },
+      "sku": { "name": "[parameters('storageAccountType')]" },
+      "kind": "Storage"
+    },
+    {
+      "name": "[variables('adAvailabilitySetName')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]"
+    },
+    {
+      "name": "VNet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[parameters('virtualNetworkName')]"
+          },
+          "virtualNetworkAddressRange": {
+            "value": "[parameters('virtualNetworkAddressRange')]"
+          },
+          "subnetName": {
+            "value": "[parameters('adSubnetName')]"
+          },
+          "subnetRange": {
+            "value": "[parameters('adSubnet')]"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "[parameters('RootDC1Name')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC1NicName'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+      ],
+      "properties": { },
+      "resources": [
+        {
+          "name": "CreateADVM1",
+          "type": "Microsoft.Resources/deployments",
+          "apiVersion": "2016-09-01",
+          "dependsOn": [
+          ],
+          "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+              "uri": "[variables('newVMTemplateUri')]",
+              "contentVersion": "1.0.0.0"
+            },
+            "parameters": {
+              "virtualNetworkName": {
+                "value": "[parameters('virtualNetworkName')]"
+              },
+              "storageAccountName": {
+                "value": "[parameters('newStorageAccountname')]"
+              },
+              "subnetName": {
+                "value": "[parameters('adSubnetName')]"
+              },
+              "adAvailabilitySetName": {
+                "value": "[variables('adAvailabilitysetName')]"
+              },
+              "vmName": {
+                "value": "[parameters('RootDC1Name')]"
+              },
+              "vmIpAddress": {
+                "value": "[parameters('RootDC1IPAddress')]"
+              },
+
+              "adminUsername": {
+                "value": "[parameters('adminUsername')]"
+              },
+              "adminPassword": {
+                "value": "[parameters('adminPassword')]"
+              },
+              "vmSize": {
+                "value": "Standard_DS2_v2"
+              },
+              "imageSKU": {
+                "value": "2012-R2-Datacenter"
+              }
+            }
+          }
+        },
+        {
+          "name": "[concat(parameters('RootDC1Name'),'/CreateADForest')]",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "apiVersion": "2016-03-30",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "CreateADVM1"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.21",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "ModulesUrl": "[variables('adRootDC1ModulesURL')]",
+              "ConfigurationFunction": "[variables('adRootDC1ConfigurationFunction')]",
+              "Properties": {
+                "DomainName": "[parameters('domainName')]",
+                "AdminCreds": {
+                  "UserName": "[parameters('adminUserName')]",
+                  "Password": "PrivateSettingsRef:AdminPassword"
+                }
+              }
+            },
+            "protectedSettings": {
+              "Items": {
+                "AdminPassword": "[parameters('adminPassword')]"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
