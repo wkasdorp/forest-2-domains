@@ -162,7 +162,7 @@
     "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/configureADNextDC.json')]",
 
     "adRootDC1ModulesURL": "[concat(parameters('assetLocation'),'/DSC/CreateADRootDC1.ps1.zip')]",
-    "adRootDC1ConfigurationFunction": "CreateADRootDC1.ps1\\CreateADRootDC1"
+    "adRootDC1ConfigurationFunction": "CreateADRootDC1.ps1\\CreateADRootDC1",
   },
   "resources": [
     {
@@ -253,17 +253,23 @@
           },
           "imageSKU": {
             "value": "2012-R2-Datacenter"
+          },
+          "assetLocation": {
+            "value":  "[parameters('assetLocation')]"
           }
         }
       }
     },
+
+
     {
       "name": "[concat(parameters('RootDC1Name'),'/CreateADForest')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'CreateADVM1')]"
+        "[resourceId('Microsoft.Resources/deployments', 'CreateADVM1')]",
+        "[concat(parameters('RootDC1Name'),'/PrepareFutureDC')]"
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
@@ -288,6 +294,8 @@
         }
       }
     }
+
+
   ]
 }
 

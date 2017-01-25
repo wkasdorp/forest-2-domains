@@ -71,6 +71,12 @@
       "metadata": {
         "description": "Windows Server Version"
       }
+    },
+    "assetLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of resources such as templates and DSC modules that the script depends on."
+      }
     }
   },
   "variables": {
@@ -83,10 +89,13 @@
     "vmNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNicName'))]",
     "vmIPConfigID": "[concat(variables('vmNicId'),'/ipConfigurations/ipconfig1')]",
     "vmDataDisk": "[concat(parameters('vmName'),'DataDisk')]",
-   
+
     "adDataDiskSize": 1000,
     "imagePublisher": "MicrosoftWindowsServer",
-    "imageOffer": "WindowsServer"
+    "imageOffer": "WindowsServer",
+
+    "adPrepareFutureDCURL": "[concat(parameters('assetLocation'),'/DSC/PrepareFutureDC.ps1.zip')]",
+    "adPrepareFutureDCConfigurationFunction": "PrepareFutureDC.ps1\\PrepareFutureDC"
   },
   "resources": [
     {
@@ -204,7 +213,39 @@
           }
         }
       ]
+    },
+    {
+      "name": "[concat(parameters('vmName'),'/PrepareFutureDC')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]",
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', 'vmEnablePSScript')"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.21",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "modulesUrl": "[variables('adPrepareFutureDCURL')]",
+          "configurationFunction": "[variables('adPrepareFutureDCConfigurationFunction')]",
+          "properties": {
+            "AdminCreds": {
+              "UserName": "[parameters('adminUserName')]",
+              "Password": "PrivateSettingsRef:AdminPassword"
+            }
+          }
+        },
+        "protectedSettings": {
+          "Items": {
+            "AdminPassword": "[parameters('adminPassword')]"
+          }
+        }
+      }
     }
+
   ],
   "outputs": { }
 }
