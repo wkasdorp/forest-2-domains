@@ -229,18 +229,8 @@
             "settings": {
               "modulesUrl": "[variables('adPrepareFutureDCURL')]",
               "configurationFunction": "[variables('adPrepareFutureDCConfigurationFunction')]",
-              "properties": {
-                "AdminCreds": {
-                  "UserName": "[parameters('adminUserName')]",
-                  "Password": "PrivateSettingsRef:AdminPassword"
-                }
-              }
             },
-            "protectedSettings": {
-              "Items": {
-                "AdminPassword": "[parameters('adminPassword')]"
-              }
-            }
+            "protectedSettings": {}
           }
         }
       ]
