@@ -54,7 +54,7 @@
       "metadata": {
         "description": "Full name for the forest root domain"
       },
-      "default value": "contoso.com"
+      "defaultValue": "contoso.com"
     },
     "RootDC1Name": {
       "type": "string",
@@ -214,8 +214,8 @@
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments','VNet')]",
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC1NicName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
       ],
       "properties": { },
@@ -225,6 +225,7 @@
           "type": "Microsoft.Resources/deployments",
           "apiVersion": "2016-09-01",
           "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('RootDC1Name'))]"
           ],
           "properties": {
             "mode": "Incremental",
@@ -251,7 +252,6 @@
               "vmIpAddress": {
                 "value": "[parameters('RootDC1IPAddress')]"
               },
-
               "adminUsername": {
                 "value": "[parameters('adminUsername')]"
               },
@@ -273,7 +273,8 @@
           "apiVersion": "2016-03-30",
           "location": "[resourceGroup().location]",
           "dependsOn": [
-            "CreateADVM1"
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('RootDC1Name'))]",
+            "[resourceId('Microsoft.Resources/deployments', 'CreateADVM1')]"
           ],
           "properties": {
             "publisher": "Microsoft.Powershell",
