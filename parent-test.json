@@ -209,97 +209,86 @@
     },
 
     {
-      "name": "[parameters('RootDC1Name')]",
-      "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2016-03-30",
-      "location": "[resourceGroup().location]",
+      "name": "CreateADVM1",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments','VNet')]",
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
       ],
-      "properties": { },
-      "resources": [
-        {
-          "name": "CreateADVM1",
-          "type": "Microsoft.Resources/deployments",
-          "apiVersion": "2016-09-01",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('RootDC1Name'))]"
-          ],
-          "properties": {
-            "mode": "Incremental",
-            "templateLink": {
-              "uri": "[variables('newVMTemplateUri')]",
-              "contentVersion": "1.0.0.0"
-            },
-            "parameters": {
-              "virtualNetworkName": {
-                "value": "[parameters('virtualNetworkName')]"
-              },
-              "storageAccountName": {
-                "value": "[parameters('newStorageAccountname')]"
-              },
-              "subnetName": {
-                "value": "[parameters('adSubnetName')]"
-              },
-              "adAvailabilitySetName": {
-                "value": "[variables('adAvailabilitysetName')]"
-              },
-              "vmName": {
-                "value": "[parameters('RootDC1Name')]"
-              },
-              "vmIpAddress": {
-                "value": "[parameters('RootDC1IPAddress')]"
-              },
-              "adminUsername": {
-                "value": "[parameters('adminUsername')]"
-              },
-              "adminPassword": {
-                "value": "[parameters('adminPassword')]"
-              },
-              "vmSize": {
-                "value": "Standard_DS2_v2"
-              },
-              "imageSKU": {
-                "value": "2012-R2-Datacenter"
-              }
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('newVMTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[parameters('virtualNetworkName')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('newStorageAccountname')]"
+          },
+          "subnetName": {
+            "value": "[parameters('adSubnetName')]"
+          },
+          "adAvailabilitySetName": {
+            "value": "[variables('adAvailabilitysetName')]"
+          },
+          "vmName": {
+            "value": "[parameters('RootDC1Name')]"
+          },
+          "vmIpAddress": {
+            "value": "[parameters('RootDC1IPAddress')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "vmSize": {
+            "value": "Standard_DS2_v2"
+          },
+          "imageSKU": {
+            "value": "2012-R2-Datacenter"
+          }
+        }
+      }
+    },
+    {
+      "name": "[concat(parameters('RootDC1Name'),'/CreateADForest')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'CreateADVM1')]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.21",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "ModulesUrl": "[variables('adRootDC1ModulesURL')]",
+          "ConfigurationFunction": "[variables('adRootDC1ConfigurationFunction')]",
+          "Properties": {
+            "DomainName": "[parameters('domainName')]",
+            "AdminCreds": {
+              "UserName": "[parameters('adminUserName')]",
+              "Password": "PrivateSettingsRef:AdminPassword"
             }
           }
         },
-        {
-          "name": "[concat(parameters('RootDC1Name'),'/CreateADForest')]",
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "apiVersion": "2016-03-30",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('RootDC1Name'))]",
-            "[resourceId('Microsoft.Resources/deployments', 'CreateADVM1')]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.21",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "ModulesUrl": "[variables('adRootDC1ModulesURL')]",
-              "ConfigurationFunction": "[variables('adRootDC1ConfigurationFunction')]",
-              "Properties": {
-                "DomainName": "[parameters('domainName')]",
-                "AdminCreds": {
-                  "UserName": "[parameters('adminUserName')]",
-                  "Password": "PrivateSettingsRef:AdminPassword"
-                }
-              }
-            },
-            "protectedSettings": {
-              "Items": {
-                "AdminPassword": "[parameters('adminPassword')]"
-              }
-            }
+        "protectedSettings": {
+          "Items": {
+            "AdminPassword": "[parameters('adminPassword')]"
           }
         }
-      ]
+      }
     }
   ]
 }
+
+
