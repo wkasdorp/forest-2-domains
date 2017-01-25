@@ -196,7 +196,7 @@
       "resources": [
         {
           "apiVersion": "2015-06-15",
-          "type": "extensions",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "vmEnablePSScript",
           "location": "[resourceGroup().location]",
           "dependsOn": [

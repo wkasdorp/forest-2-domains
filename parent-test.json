@@ -162,7 +162,7 @@
     "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/configureADNextDC.json')]",
 
     "adRootDC1ModulesURL": "[concat(parameters('assetLocation'),'/DSC/CreateADRootDC1.ps1.zip')]",
-    "adRootDC1ConfigurationFunction": "CreateADRootDC1.ps1\\CreateADRootDC1",
+    "adRootDC1ConfigurationFunction": "CreateADRootDC1.ps1\\CreateADRootDC1"
   },
   "resources": [
     {
