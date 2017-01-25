@@ -219,7 +219,7 @@
           "location": "[resourceGroup().location]",
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]",
-            "[resourceId('Microsoft.Computer/virtualMachines/Extensions','vmEnablePSScript')]"
+            "[resourceId('Microsoft.Compute/virtualMachines/extensions','vmEnablePSScript')]"
           ],
           "properties": {
             "publisher": "Microsoft.Powershell",
