@@ -89,6 +89,7 @@
     "vmNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNicName'))]",
     "vmIPConfigID": "[concat(variables('vmNicId'),'/ipConfigurations/ipconfig1')]",
     "vmDataDisk": "[concat(parameters('vmName'),'DataDisk')]",
+    "vmOSDisk": "[concat(parameters('vmName'),'OSDisk')]",
 
     "adDataDiskSize": 1000,
     "imagePublisher": "MicrosoftWindowsServer",
@@ -165,9 +166,10 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "osdisk",
+            "name": "[concat(parameters('vmName'),'-osdisk.vhd')]",
             "vhd": {
-              "uri": "[concat('http://',parameters('StorageAccountName'),'.blob.core.windows.net/vhds0/','osdisk.vhd')]"
+              "uri":
+              "uri": "[concat('http://',parameters('StorageAccountName'),'.blob.core.windows.net/vhds0/', variables('vmOSDisk'),'-1.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
