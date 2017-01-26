@@ -211,27 +211,6 @@
               "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -encodedcommand cwBlAHQALQBlAHgAZQBjAHUAdABpAG8AbgBwAG8AbABpAGMAeQAgAHUAbgByAGUAcwB0AHIAaQBjAHQAZQBkAA=="
             }
           }
-        },
-        {
-          "name": "[concat(parameters('vmName'),'/PrepareFutureDC')]",
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "apiVersion": "2016-03-30",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]",
-            "[resourceId('Microsoft.Compute/virtualMachines/extensions',concat(parameters('vmName')),'vmEnablePSScript')]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.21",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-              "modulesUrl": "[variables('adPrepareFutureDCURL')]",
-              "configurationFunction": "[variables('adPrepareFutureDCConfigurationFunction')]",
-            },
-            "protectedSettings": {}
-          }
         }
       ]
     }
