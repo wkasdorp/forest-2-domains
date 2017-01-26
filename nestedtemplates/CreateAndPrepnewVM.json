@@ -166,7 +166,7 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('vmName'),'-osdisk.vhd')]",
+            "name": "[concat(parameters('vmName'),'-osdisk')]",
             "vhd": {
               "uri": "[concat('http://',parameters('StorageAccountName'),'.blob.core.windows.net/vhds0/', variables('vmOSDisk'),'-1.vhd')]"
             },
