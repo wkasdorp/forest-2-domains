@@ -432,7 +432,7 @@
 
     {
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "name": "AssociateNSGwithadSubnet",
+      "name": "[concat(parameters('virtualNetworkName'), '/', 'AssociateNSGWithADSubnet')]",
       "apiVersion": "2016-10-01",
       "location": "[resourceGroup().location]",
       "properties": {
