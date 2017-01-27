@@ -70,6 +70,20 @@
       },
       "defaultValue": "10.0.0.4"
     },
+    "RootDC2Name": {
+      "type": "string",
+      "metadata": {
+        "description": "The computer name of the second DC of the root domain."
+      },
+      "defaultValue": "rootdc2"
+    },
+    "RootDC2IPAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "The IP address of the second DC of the root domain"
+      },
+      "defaultValue": "10.0.0.5"
+    },
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -146,13 +160,10 @@
   },
   "variables": {
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-    "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
 
-    "adRootDC1PublicIPName": "[concat(parameters('RootDC1Name'),'PublicIP')]",
-    "adRootDC1NicName": "[concat(parameters('RootDC1Name'),'Nic')]",
-    "adRootDC1NicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('adRootDC1NicName'))]",
-    "adRootDC1IPConfigID": "[concat(variables('adRootDC1NicId'),'/ipConfigurations/ipconfig1')]",
+    "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
+    "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
     "adAvailabilitySetName": "adAvailabilitySet",
 
     "newVMTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/CreateAndPrepnewVM.json')]",
@@ -160,7 +171,9 @@
     "nicTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/nic.json')]",
     "vnetwithDNSTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/vnet-with-dns-server.json')]",
     "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/configureADNextDC.json')]",
-    "createForestTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/createForest.json')]"
+    "createForestTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/createForest.json')]",
+    "nextDCConfigurationModulesURL": "[concat(parameters('assetLocation'),'/DSC/ConfigureADNextDC.ps1.zip')]",
+    "nextDCConfigurationFunction": "ConfigureADNextDC.ps1\\ConfigureADNextDC"
   },
   "resources": [
     {
@@ -204,6 +217,32 @@
           }
         }
       }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('adNSGName')]",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Allow_Any_RDP",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 200,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
+      ]
     },
 
     {
@@ -293,6 +332,118 @@
           }
         }
       }
+    },
+    {
+      "name": "CreateADVM2",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments','VNet')]",
+        "[resourceId('Microsoft.Storage/storageAccounts',parameters('newStorageAccountName'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('newVMTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[parameters('virtualNetworkName')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('newStorageAccountname')]"
+          },
+          "subnetName": {
+            "value": "[parameters('adSubnetName')]"
+          },
+          "adAvailabilitySetName": {
+            "value": "[variables('adAvailabilitysetName')]"
+          },
+          "vmName": {
+            "value": "[parameters('RootDC2Name')]"
+          },
+          "vmIpAddress": {
+            "value": "[parameters('RootDC2IPAddress')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "vmSize": {
+            "value": "Standard_DS2_v2"
+          },
+          "imageSKU": {
+            "value": "2012-R2-Datacenter"
+          },
+          "assetLocation": {
+            "value": "[parameters('assetLocation')]"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "ConfiguringRootDC2",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/CreateADVM2",
+        "Microsoft.Resources/deployments/CreateForest"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('configureADNextDCTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adNextDCVMName": {
+            "value": "[parameters('RootDC2Name')]"
+          },
+
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "DNSServer": {
+            "value": "[parameters('RootDC1IPAddress')]"
+          },
+          "adNextDCConfigurationFunction": {
+            "value": "[variables('nextDCConfigurationFunction')]"
+          },
+          "adNextDCConfigurationModulesURL": {
+            "value": "[variables('nextDCConfigurationModulesURL')]"
+          }
+        }
+      }
+    },
+
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "name": "AssociateNSGwithadSubnet",
+      "apiVersion": "2016-10-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "addressPrefix": "[parameters('adSubnet')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('adNSGName'))]"
+        }
+      },
+      "dependsOn": [
+        "Microsoft.Resources/deployments/VNet"
+      ]
     }
   ]
 }
