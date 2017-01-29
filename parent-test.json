@@ -344,6 +344,9 @@
           "domainName": {
             "value": "[parameters('domainName')]"
           },
+          "DNSForwarder": {
+            "value":  "[parameters('RootDC1IPAddress')]"
+          },
           "assetLocation": {
             "value": "[parameters('assetLocation')]"
           }

@@ -17,6 +17,9 @@
     "domainName": {
       "type": "string"
     },
+    "DnsForwarder": {
+      "type": "string"
+    },
     "assetLocation": {
       "type": "string"
     }
@@ -42,6 +45,7 @@
 		      "wmfVersion": "4.0",
           "Properties": {
             "DomainName": "[parameters('domainName')]",
+            "DnsForwarder": "[parameters('DnsForwarder')]",
             "AdminCreds": {
               "UserName": "[parameters('adminUserName')]",
               "Password": "PrivateSettingsRef:AdminPassword"
