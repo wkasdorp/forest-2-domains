@@ -237,6 +237,32 @@
               "priority": 200,
               "direction": "Inbound"
             }
+          },
+          {
+            "name": "Block_DNS_UDP_to_stop_patching",
+            "properties": {
+              "protocol": "UDP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "53",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 210,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "Block_DNS_TCP_to_stop_patching",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "destinationPortRange": "53",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 220,
+              "direction": "Outbound"
+            }
           }
         ]
       },
