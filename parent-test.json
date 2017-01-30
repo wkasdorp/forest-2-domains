@@ -35,6 +35,13 @@
       },
       "defaultValue": "10.0.0.0/16"
     },
+    "externalDNSForwarder": {
+      "type": "string",
+      "metadata": {
+        "description":  "DNS forwarder for all non-domain related DNS queries"
+      },
+      "defaultValue":  "8.8.8.8"
+    },
     "adSubnetName": {
       "type": "string",
       "metadata": {
@@ -214,6 +221,9 @@
           },
           "subnetRange": {
             "value": "[parameters('adSubnet')]"
+          },
+          "dhcpOptions": {
+            "dnsServers": "[parameters('RootDC1IPAddress')]"
           }
         }
       }
