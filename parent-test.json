@@ -221,9 +221,6 @@
           },
           "subnetRange": {
             "value": "[parameters('adSubnet')]"
-          },
-          "dhcpOptions": {
-            "dnsServers": "[parameters('RootDC1IPAddress')]"
           }
         }
       }
@@ -246,32 +243,6 @@
               "access": "Allow",
               "priority": 200,
               "direction": "Inbound"
-            }
-          },
-          {
-            "name": "Block_DNS_UDP_to_stop_patching",
-            "properties": {
-              "protocol": "UDP",
-              "sourcePortRange": "*",
-              "destinationPortRange": "53",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Deny",
-              "priority": 210,
-              "direction": "Outbound"
-            }
-          },
-          {
-            "name": "Block_DNS_TCP_to_stop_patching",
-            "properties": {
-              "protocol": "TCP",
-              "sourcePortRange": "*",
-              "destinationPortRange": "53",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Deny",
-              "priority": 220,
-              "direction": "Outbound"
             }
           }
         ]
@@ -381,7 +352,7 @@
             "value": "[parameters('domainName')]"
           },
           "DNSForwarder": {
-            "value":  "[parameters('RootDC1IPAddress')]"
+            "value": "[parameters('externalDNSForwarder')]"
           },
           "assetLocation": {
             "value": "[parameters('assetLocation')]"
@@ -481,6 +452,41 @@
           },
           "adNextDCConfigurationModulesURL": {
             "value": "[variables('nextDCConfigurationModulesURL')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "UpdateVNetDNSForwarder",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/ConfiguringRootDC2"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetwithDNSTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[parameters('virtualNetworkName')]"
+          },
+          "virtualNetworkAddressRange": {
+            "value": "[parameters('virtualNetworkAddressRange')]"
+          },
+          "subnetName": {
+            "value": "[parameters('adSubnetName')]"
+          },
+          "subnetRange": {
+            "value": "[parameters('adSubnet')]"
+          },
+          "DNSServerAddress": {
+            "value": [
+              "[parameters('RootDC1IPAddress')]",
+              "[parameters('RootDC2IPAddress')]"
+            ]
           }
         }
       }
