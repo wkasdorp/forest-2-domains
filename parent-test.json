@@ -562,7 +562,7 @@
             "value": "[parameters('domainName')]"
           },
           "childDomainName": {
-            "value": "[concat(parameters('ChildDomainName'), '.', parameters('domainName'))]"
+            "value": "[parameters('ChildDomainName')]"
           },
 
           "DNSForwarder": {
