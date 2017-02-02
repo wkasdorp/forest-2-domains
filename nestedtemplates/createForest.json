@@ -42,7 +42,6 @@
         "settings": {
           "ModulesUrl": "[variables('adRootDC1ModulesURL')]",
           "ConfigurationFunction": "[variables('adRootDC1ConfigurationFunction')]",
-		      "wmfVersion": "4.0",
           "Properties": {
             "DomainName": "[parameters('domainName')]",
             "DnsForwarder": "[parameters('DnsForwarder')]",

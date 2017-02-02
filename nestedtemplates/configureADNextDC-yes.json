@@ -40,7 +40,6 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "modulesURL": "[parameters('adNextDCConfigurationModulesURL')]",
-          "wmfVersion": "4.0",
           "configurationFunction": "[parameters('adNextDCConfigurationFunction')]",
           "properties": {
             "domainName": "[parameters('domainName')]",

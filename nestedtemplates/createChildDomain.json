@@ -45,7 +45,6 @@
         "settings": {
           "ModulesUrl": "[variables('adChildDomainDC1ModulesURL')]",
           "ConfigurationFunction": "[variables('adChildDomainDC1ConfigurationFunction')]",
-		      "wmfVersion": "4.0",
           "Properties": {
             "ParentDomainName": "[parameters('parentDomainName')]",
             "ChildDomainName": "[parameters('childDomainName')]",
