@@ -2,6 +2,30 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "adNextDCVMName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "DNSServer": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "domainName": {
+      "type": "string"
+    },
+    "adNextDCConfigurationFunction": {
+      "type": "string"
+    },
+    "adNextDCConfigurationModulesURL": {
+      "type": "string"
+    }
   },
   "resources": [
   ],
