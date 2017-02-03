@@ -17,16 +17,18 @@ Azure Region, so the fact that a dedicated VNET is used is not a connectivity li
 The Domain Controllers are placed in an Availability Set to maximize uptime. 
 A new storage account is created with an auto-generated name. The storage account
 is of type "Premium" to allow VMs to use fast SSD storage. You can pick the 
-replication scope of the storage account. The VMs are limited to the D-class, but you can
-pick any size and storage type. 
+replication scope of the storage account. The list of VM types is pre-populated with
+types that are suitable for DCs, from very small to large.
 
-Click the button below to deploy a forest to Azure. Most parameters have sensible defaults.
+Most template parameters have sensible defaults.
 You will get a forest root of _contoso.com_, a child domain called _child.contoso.com_, two DCs
 in each domain, a small IP space of 10.0.0.0/22 (meaning 10.0.0.0 up to 1.0.0.3.255), etc.
 The VMs are of type DS1_v2, meaning 3.5 GB of memory, one core and SSD storage. This is plenty
 for a simple Active Directory.
 The only thing you really need to do is to supply an admin password. Make sure it is 8
 characters or more, and complex. You know the drill. 
+
+Click the button below to deploy a forest to Azure. Expect the whole thing to take about one hour. 
 
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2Fmaster%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
