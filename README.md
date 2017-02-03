@@ -1,20 +1,30 @@
-# Create a forest with two domains and one or two DCs each
+# Create an Active Directory forest with two domains, and four DCs
 
-This template will create a new forest for you, with a root and child domain. 
+This template will create a new Active Directory forest for you, with a root and child domain. 
 You can choose between one or two Domain Controllers per domain, and you can pick an Operating System version
-of Windows Serve 2012, Windows Server 2012 R2, or Windows Server 2016. 
+of Windows Server 2012, Windows Server 2012 R2, or Windows Server 2016. 
 
-A new VNET is created with a dedicated subnet for the Domain Controllers. A network security group (NSG)
-is added to limit incoming traffic to Remote Desktop Protocol (RDP). You can edit the NSG later to allow
-traffic from your datacenters only. With VNET peering it is easy to connect different VNETS in the same
+A forest with two domains in Azure is especially useful for AD-related development, testing, and troubleshooting. 
+Many enterprises have complex Active Directories with multiple domains, so if you are developing an application 
+for such companies it makes a lot of sense to use a multi-domain Active Directory as well. 
+
+The template creates a new VNET created with a dedicated subnet for the Domain Controllers. 
+A network security group (NSG) is added to limit incoming traffic allowing only Remote Desktop Protocol (RDP). 
+You can edit the NSG manually to permit traffic from your datacenters only. 
+With VNET peering it is easy to connect different VNETs in the same
 Azure Region, so the fact that a dedicated VNET is used is not a connectivity limitation anymore.
 
 The Domain Controllers are placed in an Availability Set to maximize uptime. 
-A new storage account is created with an auto-generated name.
+A new storage account is created with an auto-generated name. The storage account
+is of type "Premium" to allow VMs to use fast SSD storage. You can pick the 
+replication scope of the storage account. The VMs are limited to the D-class, but you can
+pick any size and storage type. 
 
 Click the button below to deploy a forest to Azure. Most parameters have sensible defaults.
 You will get a forest root of _contoso.com_, a child domain called _child.contoso.com_, two DCs
-in each domain, a small IP range of 10.0.0.0/22 (meaning 10.0.0.0 up to 1.0.0.3.255), etc.
+in each domain, a small IP space of 10.0.0.0/22 (meaning 10.0.0.0 up to 1.0.0.3.255), etc.
+The VMs are of type DS1_v2, meaning 3.5 GB of memory, one core and SSD storage. This is plenty
+for a simple Active Directory.
 The only thing you really need to do is to supply an admin password. Make sure it is 8
 characters or more, and complex. You know the drill. 
 
@@ -25,7 +35,9 @@ characters or more, and complex. You know the drill.
 
 ### Credits
 
-This project was initially copied from <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/active-directory-new-domain-ha-2-dc"> active-directory-new-domain-ha-2-dc</a> project in the Azure Quickstart templates.
+This project was initially copied from the
+ <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/active-directory-new-domain-ha-2-dc"> active-directory-new-domain-ha-2-dc</a> 
+project by Simon Davies, part of the the Azure Quickstart templates.
 
 ### Tech notes
 #### DNS
@@ -93,3 +105,5 @@ in which modules work or not. This is almost undocumented, but the short version
 is that almost nothing worked so I had to give it up. 
 
 Enjoy, and let me know if you have suggestions or improvements. 
+
+Willem Kasdorp, 3-2-2017. 
