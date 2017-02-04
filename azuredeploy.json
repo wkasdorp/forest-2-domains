@@ -108,7 +108,7 @@
     "createSecondDc": {
       "type": "string",
       "metadata": {
-        "description": "Do you want a second DC in each domain? If no: parameters for 2nd DCs are ignored. "
+        "description": "Do you want a second DC in each domain? If no: parameters for DC2 and DC4 are ignored. "
       },
       "allowedValues": [
         "yes",
@@ -199,7 +199,8 @@
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
-    "adAvailabilitySetName": "adAvailabilitySet",
+    "adAvailabilitySetNameRoot": "AvailSetRoot",
+    "adAvailabilitySetNameChild": "AvailSetChild",
 
     "firstVMTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/CreateAndPrepnewVM-yes.json')]",
     "nextVMTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/CreateAndPrepnewVM-',parameters('createSecondDc'),'.json')]",
@@ -225,7 +226,13 @@
       "kind": "Storage"
     },
     {
-      "name": "[variables('adAvailabilitySetName')]",
+      "name": "[variables('adAvailabilitySetNameRoot')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "apiVersion": "2016-03-30",
+      "location": "[resourceGroup().location]"
+    },
+    {
+      "name": "[variables('adAvailabilitySetNameChild')]",
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]"
@@ -307,7 +314,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments','VNet')]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameRoot'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -326,7 +333,7 @@
             "value": "[parameters('adSubnetName')]"
           },
           "adAvailabilitySetName": {
-            "value": "[variables('adAvailabilitysetName')]"
+            "value": "[variables('adAvailabilitySetNameRoot')]"
           },
           "vmName": {
             "value": "[parameters('RootDC1Name')]"
@@ -399,7 +406,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments','VNet')]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameChild'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -418,7 +425,7 @@
             "value": "[parameters('adSubnetName')]"
           },
           "adAvailabilitySetName": {
-            "value": "[variables('adAvailabilitysetName')]"
+            "value": "[variables('adAvailabilitySetNameChild')]"
           },
           "vmName": {
             "value": "[parameters('ChildDC3Name')]"
@@ -496,7 +503,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments','VNet')]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameRoot'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -515,7 +522,7 @@
             "value": "[parameters('adSubnetName')]"
           },
           "adAvailabilitySetName": {
-            "value": "[variables('adAvailabilitysetName')]"
+            "value": "[variables('adAvailabilitySetNameRoot')]"
           },
           "vmName": {
             "value": "[parameters('RootDC2Name')]"
@@ -592,7 +599,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments','VNet')]",
         "[resourceId('Microsoft.Storage/storageAccounts',variables('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameChild'))]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -611,7 +618,7 @@
             "value": "[parameters('adSubnetName')]"
           },
           "adAvailabilitySetName": {
-            "value": "[variables('adAvailabilitysetName')]"
+            "value": "[variables('adAvailabilitySetNameChild')]"
           },
           "vmName": {
             "value": "[parameters('ChildDC4Name')]"
