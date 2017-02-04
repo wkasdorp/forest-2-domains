@@ -451,8 +451,7 @@
       "apiVersion": "2016-09-01",
       "dependsOn": [
         "Microsoft.Resources/deployments/CreateADVM3",
-        "Microsoft.Resources/deployments/CreateForest",
-        "Microsoft.Resources/deployments/UpdateVNetDNSSettings"
+        "Microsoft.Resources/deployments/CreateForest"
       ],
       "properties": {
         "mode": "Incremental",
@@ -485,42 +484,6 @@
           },
           "assetLocation": {
             "value": "[parameters('assetLocation')]"
-          }
-        }
-      }
-    },
-
-    {
-      "name": "UpdateVNetDNSSettings",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [
-        "Microsoft.Resources/deployments/CreateChildDomain"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('vnetwithDNSTemplateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[parameters('virtualNetworkName')]"
-          },
-          "virtualNetworkAddressRange": {
-            "value": "[parameters('virtualNetworkAddressRange')]"
-          },
-          "subnetName": {
-            "value": "[parameters('adSubnetName')]"
-          },
-          "subnetRange": {
-            "value": "[parameters('adSubnet')]"
-          },
-          "DNSServerAddress": {
-            "value": [
-              "[parameters('RootDC1IPAddress')]",
-              "[parameters('RootDC2IPAddress')]"
-            ]
           }
         }
       }
@@ -716,7 +679,44 @@
           }
         }
       }
+    },
+
+    {
+      "name": "UpdateVNetDNSSettings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/CreateChildDomain"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetwithDNSTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[parameters('virtualNetworkName')]"
+          },
+          "virtualNetworkAddressRange": {
+            "value": "[parameters('virtualNetworkAddressRange')]"
+          },
+          "subnetName": {
+            "value": "[parameters('adSubnetName')]"
+          },
+          "subnetRange": {
+            "value": "[parameters('adSubnet')]"
+          },
+          "DNSServerAddress": {
+            "value": [
+              "[parameters('RootDC1IPAddress')]",
+              "[parameters('RootDC2IPAddress')]"
+            ]
+          }
+        }
+      }
     }
+
   ]
 }
 
