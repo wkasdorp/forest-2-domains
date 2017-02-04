@@ -15,6 +15,47 @@
       },
       "defaultValue": "Premium_LRS"
     },
+    "VMSize": {
+      "type": "string",
+      "allowedValues": [
+        "Basic_A1",
+        "Basic_A2",
+        "Basic_A3",
+        "Standard_A1",
+        "Standard_A1_v2",
+        "Standard_A2",
+        "Standard_A2_v2",
+        "Standard_A3",
+        "Standard_D1",
+        "Standard_D1_v2",
+        "Standard_D2",
+        "Standard_D2_v2",
+        "Standard_D3",
+        "Standard_D3_v2",
+        "Standard_DS1",
+        "Standard_DS1_v2",
+        "Standard_DS2",
+        "Standard_DS2_v2",
+        "Standard_DS3",
+        "Standard_DS3_v2"
+      ],
+      "metadata": {
+        "description": "The size and type of the VM. Match the type to the storage account, DS types need Premium!"
+      },
+      "defaultValue": "Standard_DS1_v2"
+    },
+    "imageSKU": {
+      "type": "string",
+      "defaultValue": "2012-R2-Datacenter",
+      "allowedValues": [
+        "2012-Datacenter",
+        "2012-R2-Datacenter",
+        "2016-Datacenter"
+      ],
+      "metadata": {
+        "description": "Windows Server Version."
+      }
+    },
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
@@ -143,47 +184,6 @@
       "type": "securestring",
       "metadata": {
         "description": "The password for the Administrator account of the new VMs and Domain(s)"
-      }
-    },
-    "VMSize": {
-      "type": "string",
-      "allowedValues": [
-        "Basic_A1",
-        "Basic_A2",
-        "Basic_A3",
-        "Standard_A1",
-        "Standard_A1_v2",
-        "Standard_A2",
-        "Standard_A2_v2",
-        "Standard_A3",
-        "Standard_D1",
-        "Standard_D1_v2",
-        "Standard_D2",
-        "Standard_D2_v2",
-        "Standard_D3",
-        "Standard_D3_v2",
-        "Standard_DS1",
-        "Standard_DS1_v2",
-        "Standard_DS2",
-        "Standard_DS2_v2",
-        "Standard_DS3",
-        "Standard_DS3_v2"
-      ],
-      "metadata": {
-        "description": "The size of the VM. Note that a typical DC does not need much."
-      },
-      "defaultValue": "Standard_DS1_v2"
-    },
-    "imageSKU": {
-      "type": "string",
-      "defaultValue": "2012-R2-Datacenter",
-      "allowedValues": [
-        "2012-Datacenter",
-        "2012-R2-Datacenter",
-        "2016-Datacenter"
-      ],
-      "metadata": {
-        "description": "Windows Server Version."
       }
     },
     "assetLocation": {
@@ -391,138 +391,6 @@
         }
       }
     },
-    {
-      "name": "CreateADVM2",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments','VNet')]",
-        "[resourceId('Microsoft.Storage/storageAccounts',variables('newStorageAccountName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('nextVMTemplateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[parameters('virtualNetworkName')]"
-          },
-          "storageAccountName": {
-            "value": "[variables('newStorageAccountname')]"
-          },
-          "subnetName": {
-            "value": "[parameters('adSubnetName')]"
-          },
-          "adAvailabilitySetName": {
-            "value": "[variables('adAvailabilitysetName')]"
-          },
-          "vmName": {
-            "value": "[parameters('RootDC2Name')]"
-          },
-          "vmIpAddress": {
-            "value": "[parameters('RootDC2IPAddress')]"
-          },
-          "adminUsername": {
-            "value": "[parameters('adminUsername')]"
-          },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
-          },
-          "vmSize": {
-            "value": "[parameters('VMSize')]"
-          },
-          "imageSKU": {
-            "value": "[parameters('imageSKU')]"
-          },
-          "assetLocation": {
-            "value": "[parameters('assetLocation')]"
-          }
-        }
-      }
-    },
-
-    {
-      "name": "ConfiguringRootDC2",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [
-        "Microsoft.Resources/deployments/CreateADVM2",
-        "Microsoft.Resources/deployments/CreateForest"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('configureADNextDCTemplateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "adNextDCVMName": {
-            "value": "[parameters('RootDC2Name')]"
-          },
-
-          "location": {
-            "value": "[resourceGroup().location]"
-          },
-          "adminUsername": {
-            "value": "[parameters('adminUsername')]"
-          },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
-          },
-          "domainName": {
-            "value": "[parameters('domainName')]"
-          },
-          "DNSServer": {
-            "value": "[parameters('RootDC1IPAddress')]"
-          },
-          "adNextDCConfigurationFunction": {
-            "value": "[variables('nextDCConfigurationFunction')]"
-          },
-          "adNextDCConfigurationModulesURL": {
-            "value": "[variables('nextDCConfigurationModulesURL')]"
-          }
-        }
-      }
-    },
-
-    {
-      "name": "UpdateVNetDNSSettings",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [
-        "Microsoft.Resources/deployments/ConfiguringRootDC2"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('vnetwithDNSTemplateUri')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[parameters('virtualNetworkName')]"
-          },
-          "virtualNetworkAddressRange": {
-            "value": "[parameters('virtualNetworkAddressRange')]"
-          },
-          "subnetName": {
-            "value": "[parameters('adSubnetName')]"
-          },
-          "subnetRange": {
-            "value": "[parameters('adSubnet')]"
-          },
-          "DNSServerAddress": {
-            "value": [
-              "[parameters('RootDC1IPAddress')]",
-              "[parameters('RootDC2IPAddress')]"
-            ]
-          }
-        }
-      }
-    },
 
     {
       "name": "CreateADVM3",
@@ -623,6 +491,138 @@
     },
 
     {
+      "name": "UpdateVNetDNSSettings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/CreateChildDomain"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetwithDNSTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[parameters('virtualNetworkName')]"
+          },
+          "virtualNetworkAddressRange": {
+            "value": "[parameters('virtualNetworkAddressRange')]"
+          },
+          "subnetName": {
+            "value": "[parameters('adSubnetName')]"
+          },
+          "subnetRange": {
+            "value": "[parameters('adSubnet')]"
+          },
+          "DNSServerAddress": {
+            "value": [
+              "[parameters('RootDC1IPAddress')]",
+              "[parameters('RootDC2IPAddress')]"
+            ]
+          }
+        }
+      }
+    },
+
+    {
+      "name": "CreateADVM2",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments','VNet')]",
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('newStorageAccountName'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('nextVMTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[parameters('virtualNetworkName')]"
+          },
+          "storageAccountName": {
+            "value": "[variables('newStorageAccountname')]"
+          },
+          "subnetName": {
+            "value": "[parameters('adSubnetName')]"
+          },
+          "adAvailabilitySetName": {
+            "value": "[variables('adAvailabilitysetName')]"
+          },
+          "vmName": {
+            "value": "[parameters('RootDC2Name')]"
+          },
+          "vmIpAddress": {
+            "value": "[parameters('RootDC2IPAddress')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "vmSize": {
+            "value": "[parameters('VMSize')]"
+          },
+          "imageSKU": {
+            "value": "[parameters('imageSKU')]"
+          },
+          "assetLocation": {
+            "value": "[parameters('assetLocation')]"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "ConfiguringRootDC2",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/CreateADVM2",
+        "Microsoft.Resources/deployments/CreateChildDomain"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('configureADNextDCTemplateUri')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adNextDCVMName": {
+            "value": "[parameters('RootDC2Name')]"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "DNSServer": {
+            "value": "[parameters('RootDC1IPAddress')]"
+          },
+          "adNextDCConfigurationFunction": {
+            "value": "[variables('nextDCConfigurationFunction')]"
+          },
+          "adNextDCConfigurationModulesURL": {
+            "value": "[variables('nextDCConfigurationModulesURL')]"
+          }
+        }
+      }
+    },
+
+    {
       "name": "CreateADVM4",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
@@ -634,7 +634,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[variables('firstVMTemplateUri')]",
+          "uri": "[variables('nextVMTemplateUri')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -706,7 +706,7 @@
             "value": "[concat(parameters('childDomainName'), '.', parameters('domainName'))]"
           },
           "DNSServer": {
-            "value": "[parameters('RootDC1IPAddress')]"
+            "value": "[parameters('ChildDC3IPAddress')]"
           },
           "adNextDCConfigurationFunction": {
             "value": "[variables('nextDCConfigurationFunction')]"
