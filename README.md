@@ -16,12 +16,11 @@ Domain Controllers. A network security group (NSG) is added to limit
 incoming traffic allowing only Remote Desktop Protocol (RDP). You can 
 edit the NSG manually to permit traffic from your datacenters only. With 
 VNET peering it is easy to connect different VNETs in the same Azure 
-Region, so the fact that a dedicated VNET is used here is not a connectivity 
+Region, so the fact that a dedicated VNET is used is not a connectivity 
 limitation anymore. 
 
 The Domain Controllers are placed in an Availability Set to maximize 
-uptime. Each domain has its own Availability set. 
-A new storage account is created with an auto-generated name. 
+uptime. A new storage account is created with an auto-generated name. 
 The storage account is of type "Premium" to allow VMs to use fast SSD 
 storage. You can pick the replication scope of the storage account. The 
 list of VM types is pre-populated with types that are suitable for DCs, 
@@ -32,8 +31,7 @@ storage account, and "normal" VMs to a non-premium storage account.
 Most template parameters have sensible defaults. You will get a forest 
 root of _contoso.com_, a child domain called _child.contoso.com_, two 
 DCs in each domain, a small IP space of 10.0.0.0/22 (meaning 10.0.0.0 up 
-to 1.0.0.3.255), etc. Each VM will have the AD-related management tools installed.
-By default, the VMs are of type DS1_v2, meaning 3.5 GB of 
+to 1.0.0.3.255), etc. The VMs are of type DS1_v2, meaning 3.5 GB of 
 memory, one core and SSD storage. This is plenty for a simple Active 
 Directory. The only thing you really need to do is to supply an admin 
 password. Make sure it is 8 characters or more, and complex. You know 
@@ -46,14 +44,11 @@ Expect the whole thing to take about one hour.
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
-Warning: this template will **create two or four running VMs**. 
-Be sure to deallocate them when you no longer need them to avoid
- incurring costs. 
 
 ### Credits
 
 This project was initially copied from the
-[active-directory-new-domain-ha-2-dc](https://github.com/Azure/azure-quickstart-templates/tree/master/active-directory-new-domain-ha-2-dc)
+ <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/active-directory-new-domain-ha-2-dc"> active-directory-new-domain-ha-2-dc</a> 
 project by Simon Davies, part of the the Azure Quickstart templates.
 
 ### Tech notes
@@ -77,8 +72,8 @@ I also had to look carefully at the order in which the VMs are provisioned.
 Initially I created the root domain on DC1. Then, I promoted DC2 (root)
 and DC3 (child) at the same time. After much testing I discovered that this
 would _sometimes_ go wrong because DC3 would take DC2 as a DNS source
-when it was not ready. So I reordered the dependencies to first promote
- DC1 (root), then DC3 (child), and only then add secondary DCs to both domains.
+when it was not ready. So I reordered the dependencies first promoted DC1 (root), 
+then DC3 (child), and only then added secondary DCs to both domains.
 These subtle things matter. 
 
 #### Subtemplates
@@ -108,8 +103,7 @@ myself. Less did I realize that this also means that I have accept the
 limitations that go along with it: if the DSC module does not support 
 it, you can't have it. One such example is creation of a tree domain in 
 the same forest, such as a root of _contoso.com_ and another tree of 
-_fabrikam.com_. The DSC for Active Directory does not currently (feb 2017)
-allow this. 
+_fabrikam.com_. The DSC for Active Directory does not allow this. 
 
 In this project I have only used widely accepted DSC modules to avoid 
 developing or maintaining my own: 
@@ -132,11 +126,11 @@ Powershell execution policy specifically for Windows Server 2012
 powershell script to set the execution policy to unrestricted. 
 
 For similar reasons, this template does not support Windows Server 2008 
-R2. While the standard Azure image VM image for 2008 R2
- supports DSC now, it is still highly limited in which modules work or not. 
-This is almost undocumented, but the short version is that almost
- nothing worked for 2008 R2 so I had to give it up. 
+R2. While the standard Azure image supports DSC now, it is still highly 
+limited in which modules work or not. This is almost undocumented, but 
+the short version is that almost nothing worked so I had to give it up. 
+
 
 Enjoy, and let me know if you have suggestions or improvements. 
 
-Willem Kasdorp, 9-2-2017. 
+Willem Kasdorp, 3-2-2017. 
