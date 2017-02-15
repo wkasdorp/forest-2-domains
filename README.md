@@ -16,8 +16,7 @@ Domain Controllers. A network security group (NSG) is added to limit
 incoming traffic allowing only Remote Desktop Protocol (RDP). You can 
 edit the NSG manually to permit traffic from your datacenters only. With 
 VNET peering it is easy to connect different VNETs in the same Azure 
-Region, so the fact that a dedicated VNET is used here is not a connectivity 
-limitation anymore. 
+Region, so the fact that a dedicated VNET is used here is not a connectivity limitation anymore. 
 
 The Domain Controllers are placed in an Availability Set to maximize 
 uptime. Each domain has its own Availability set. 
@@ -26,7 +25,7 @@ The storage account is of type "Premium" to allow VMs to use fast SSD
 storage. You can pick the replication scope of the storage account. The 
 list of VM types is pre-populated with types that are suitable for DCs, 
 from very small to large. Be careful, not all combinations of storage 
-account type and VM type are possible. Deploy SSD VMs Only to an Premium 
+account type and VM type are possible. Deploy SSD VMs only to an Premium 
 storage account, and "normal" VMs to a non-premium storage account. 
 
 Most template parameters have sensible defaults. You will get a forest 
@@ -58,15 +57,15 @@ project by Simon Davies, part of the the Azure Quickstart templates.
 
 ### Tech notes
 #### DNS
-The hard part about creating forests, domains and Domain Controller in 
-Azure is the managing of DNS and DNS references. AD strongly depends on 
-its own DNS domains and during domain creation the relevant zones must 
+The hard part about creating forests, domains and Domain Controllers in 
+Azure is the managing of DNS Domains and zones, and DNS references. AD strongly depends on 
+its own DNS domains, and during domain creation the relevant zones must 
 be created. On the other hand, Azure VMs _must_ have internet 
-connectivity for its internal Azure Agent to work. 
+connectivity for their internal Azure Agent to work. 
 
 To meet this requirement, the DNS reference in the IP Settings of each 
 VM must be changed a couple of times during deployment. The design 
-choice I made was to appoint the first VM as master DNS. It will resolve 
+choice I made was to appoint the first VM as master DNS server. It will resolve 
 externally, and this is why the configuration asks you to supply an 
 external forwarder. In the end situation, the VNET has two DNS servers 
 pointing to the forest root domain, so any new VM you add to the VNET 
