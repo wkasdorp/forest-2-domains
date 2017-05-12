@@ -307,24 +307,6 @@
         "Microsoft.Resources/deployments/VNet"
       ]
     },
-
-    {
-      "type": "Microsoft.Network/virtualNetworks/subnets",
-      "name": "[concat(parameters('virtualNetworkName'), '/', parameters('adSubnetName'))]",
-      "apiVersion": "2016-10-01",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "addressPrefix": "[parameters('adSubnet')]",
-        "networkSecurityGroup": {
-          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('adNSGName'))]"
-        }
-      },
-      "dependsOn": [
-        "Microsoft.Resources/deployments/VNet",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('adNSGName'))]"
-      ]
-    },
-
     {
       "name": "CreateADVM1",
       "type": "Microsoft.Resources/deployments",
@@ -707,7 +689,7 @@
     },
 
     {
-      "name": "UpdateVNetDNSSettings",
+      "name": "UpdateVNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
@@ -731,6 +713,9 @@
           },
           "subnetRange": {
             "value": "[parameters('adSubnet')]"
+          },
+          "NSGName": {
+            "value":  "[variables('adNSGName')]"
           },
           "DNSServerAddress": {
             "value": [
