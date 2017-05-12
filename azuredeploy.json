@@ -209,7 +209,7 @@
       "metadata": {
         "description": "The location of resources such as templates and DSC modules that the script depends on."
       },
-      "defaultValue": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/1.0-stable"
+      "defaultValue": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"
     }
   },
   "variables": {
