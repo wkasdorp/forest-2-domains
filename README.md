@@ -1,5 +1,7 @@
 # Create an Active Directory forest with two domains, and four DCs
 
+_(update: this is work in progress. I am rewriting it to support managed disks)_
+
 This template will create a new Active Directory forest for you, with a 
 root and child domain. You can choose between one or two Domain 
 Controllers per domain, and you can pick an Operating System version of 
