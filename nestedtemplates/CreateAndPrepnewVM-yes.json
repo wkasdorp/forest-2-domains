@@ -3,12 +3,6 @@
   "contentVersion": "1.0.0.0",
 
   "parameters": {
-    "storageAccountName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of existing storage account created to store the VMs disks"
-      }
-    },
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
@@ -58,7 +52,7 @@
       "metadata": {
         "description": "The size of the VM Created"
       },
-      "defaultValue": "Standard_DS2_v2"
+      "defaultValue": "Standard_DS1_v2"
     },
     "imageSKU": {
       "type": "string",
@@ -88,10 +82,10 @@
     "vmNicName": "[concat(parameters('vmName'),'Nic')]",
     "vmNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNicName'))]",
     "vmIPConfigID": "[concat(variables('vmNicId'),'/ipConfigurations/ipconfig1')]",
-    "vmDataDisk": "[concat(parameters('vmName'),'DataDisk')]",
-    "vmOSDisk": "[concat(parameters('vmName'),'OSDisk')]",
+    "vmDataDisk": "[concat(parameters('vmName'),'-managed-DataDisk1')]",
+    "vmOSDisk": "[concat(parameters('vmName'),'-managed-OSDisk')]",
 
-    "adDataDiskSize": 10,
+    "vmDataDiskSize": 10,
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
 
@@ -139,9 +133,27 @@
       }
     },
     {
+      "type": "Microsoft.Compute/disks",
+      "name": "[concat(parameters('VMName'),variables('vmDataDisk'))]",
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+      ],
+      "sku": {
+        "name": "[if(contains(parameters('vmSize'),'DS'),'Premium_LRS','Standard_LRS')]"
+      },
+      "properties": {
+        "creationData": {
+          "createOption": "Empty"
+        },
+        "diskSizeGB": "[variables('vmDataDiskSize')]"
+      }
+    },
+
+    {
       "name": "[parameters('vmName')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2016-03-30",
+      "apiVersion": "2017-03-30",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNicName'))]"
@@ -166,23 +178,20 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('vmName'),'-osdisk')]",
-            "vhd": {
-              "uri": "[concat('http://',parameters('StorageAccountName'),'.blob.core.windows.net/vhds0/', variables('vmOSDisk'),'-1.vhd')]"
-            },
+            "name": "[concat(parameters('vmName'),variables('vmOSDisk'))]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
           "dataDisks": [
             {
-              "vhd": {
-                "uri": "[concat('http://',parameters('StorageAccountName'),'.blob.core.windows.net/vhds0/', variables('vmDataDisk'),'-1.vhd')]"
+              "name": "[concat(parameters('vmName'),variables('vmDataDisk'))]",
+              "managedDisk": {
+                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName'),variables('vmDataDisk')))]"
               },
-              "name": "[concat(parameters('vmName'),'-data-disk1')]",
               "caching": "None",
-              "diskSizeGB": "[variables('adDataDiskSize')]",
+              "diskSizeGB": "[variables('vmDataDiskSize')]",
               "lun": 0,
-              "createOption": "empty"
+              "createOption": "Empty"
             }
           ]
         },
