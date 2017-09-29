@@ -187,7 +187,7 @@
               "caching": "None",
               "diskSizeGB": "[variables('vmDataDiskSize')]",
               "lun": 0,
-              "createOption": "Empty"
+              "createOption": "Attach"
             }
           ]
         },
