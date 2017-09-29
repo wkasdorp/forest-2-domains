@@ -76,7 +76,6 @@
   "variables": {
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('SubnetName'))]",
-    "adNSGName": "[concat(parameters('SubnetName'),'NSG')]",
 
     "vmPublicIPName": "[concat(parameters('vmName'),'PublicIP')]",
     "vmNicName": "[concat(parameters('vmName'),'Nic')]",
@@ -87,10 +86,7 @@
 
     "vmDataDiskSize": 10,
     "imagePublisher": "MicrosoftWindowsServer",
-    "imageOffer": "WindowsServer",
-
-    "adPrepareFutureDCURL": "[concat(parameters('assetLocation'),'/DSC/PrepareFutureDC.ps1.zip')]",
-    "adPrepareFutureDCConfigurationFunction": "PrepareFutureDC.ps1\\PrepareFutureDC"
+    "imageOffer": "WindowsServer"
   },
   "resources": [
     {
@@ -134,7 +130,7 @@
     },
     {
       "type": "Microsoft.Compute/disks",
-      "name": "[concat(parameters('VMName'),variables('vmDataDisk'))]",
+      "name": "[variables('vmDataDisk')]",
       "apiVersion": "2017-03-30",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -178,15 +174,15 @@
             "version": "latest"
           },
           "osDisk": {
-            "name": "[concat(parameters('vmName'),variables('vmOSDisk'))]",
+            "name": "[variables('vmOSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
           "dataDisks": [
             {
-              "name": "[concat(parameters('vmName'),variables('vmDataDisk'))]",
+              "name": "[variables('vmDataDisk')]",
               "managedDisk": {
-                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName'),variables('vmDataDisk')))]"
+                "id": "[resourceId('Microsoft.Compute/disks/', variables('vmDataDisk'))]"
               },
               "caching": "None",
               "diskSizeGB": "[variables('vmDataDiskSize')]",
