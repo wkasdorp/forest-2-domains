@@ -212,14 +212,28 @@
     {
       "name": "[variables('adAvailabilitySetNameRoot')]",
       "type": "Microsoft.Compute/availabilitySets",
-      "apiVersion": "2016-03-30",
-      "location": "[resourceGroup().location]"
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Aligned"
+      },
+      "properties": {
+        "PlatformUpdateDomainCount": 3,
+        "PlatformFaultDomainCount": 2
+      }
     },
     {
       "name": "[variables('adAvailabilitySetNameChild')]",
       "type": "Microsoft.Compute/availabilitySets",
-      "apiVersion": "2016-03-30",
-      "location": "[resourceGroup().location]"
+      "apiVersion": "2017-03-30",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Aligned"
+      },
+      "properties": {
+        "PlatformUpdateDomainCount": 3,
+        "PlatformFaultDomainCount": 2
+      }
     },
     {
       "name": "VNet",
