@@ -92,15 +92,11 @@
       "maxlength": 15
     },
     "createSecondDc": {
-      "type": "string",
+      "type": "bool",
       "metadata": {
-        "description": "Do you want a second DC in each domain? If no: parameters for DC2 and DC4 are ignored. "
+        "description": "Do you want a second DC in each domain? If false: parameters for DC2 and DC4 are ignored. "
       },
-      "allowedValues": [
-        "yes",
-        "no"
-      ],
-      "defaultValue": "yes"
+      "defaultValue": false
     },
     "RootDC1Name": {
       "type": "string",
@@ -198,11 +194,11 @@
     "adAvailabilitySetNameRoot": "AvailSetRoot",
     "adAvailabilitySetNameChild": "AvailSetChild",
 
-    "firstVMTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/CreateAndPrepnewVM-yes.json')]",
-    "nextVMTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/CreateAndPrepnewVM-',parameters('createSecondDc'),'.json')]",
+    "firstVMTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/CreateAndPrepnewVM.json')]",
+    "nextVMTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/CreateAndPrepnewVM.json')]",
     "vnetTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/vnet.json')]",
     "vnetwithDNSTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/vnet-with-dns-server.json')]",
-    "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/configureADNextDC-',parameters('createSecondDc'),'.json')]",
+    "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/configureADNextDC.json')]",
     "createForestTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/createForest.json')]",
     "createChildDomainTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/createChildDomain.json')]",
     "nextDCConfigurationModulesURL": "[concat(parameters('assetLocation'),'/DSC/ConfigureADNextDC.ps1.zip')]",
@@ -472,6 +468,7 @@
       "name": "CreateADVM2",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
+      "condition": "[parameters('createSecondDc')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments','VNet')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameRoot'))]"
@@ -521,6 +518,7 @@
       "name": "ConfiguringRootDC2",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
+      "condition": "[parameters('createSecondDc')]",
       "dependsOn": [
         "Microsoft.Resources/deployments/CreateADVM2",
         "Microsoft.Resources/deployments/CreateChildDomain"
@@ -564,6 +562,7 @@
       "name": "CreateADVM4",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
+      "condition": "[parameters('createSecondDc')]",
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments','VNet')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameChild'))]"
@@ -612,6 +611,7 @@
     {
       "name": "ConfiguringChildDC4",
       "type": "Microsoft.Resources/deployments",
+      "condition": "[parameters('createSecondDc')]",
       "apiVersion": "2016-09-01",
       "dependsOn": [
         "Microsoft.Resources/deployments/CreateADVM4",
