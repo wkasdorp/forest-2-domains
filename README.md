@@ -2,6 +2,13 @@
 
 _(update: this is work in progress. I am rewriting it to support managed disks)_
 
+# Deploy 2.0-DEV
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2F2.0-dev%2Fazuredeploy.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
+
+
+
 This template will create a new Active Directory forest for you, with a 
 root and child domain. You can choose between one or two Domain 
 Controllers per domain, and you can pick an Operating System version of 
