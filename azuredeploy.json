@@ -82,6 +82,38 @@
       "defaultValue": "contoso.com",
       "minlength": 4
     },
+    "createChildDomain": {
+      "type": "bool",
+      "metadata": {
+        "description": "Do you want a child domain? If false, the parameters for the child are ignored. "
+      },
+      "defaultValue": true
+    },
+    "createSecondDc": {
+      "type": "bool",
+      "metadata": {
+        "description": "Do you want a second DC in each domain? If false: parameters for DC2 and DC4 are ignored. "
+      },
+      "defaultValue": false
+    },
+
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the admin account for the Domain(s)"
+      },
+      "defaultValue": "adAdministrator",
+      "minlength": 6,
+      "maxlength": 15
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password for the Administrator account of the new VMs and Domain(s)"
+      },
+      "minlength": 8
+    },
+
     "ChildDomainName": {
       "type": "string",
       "metadata": {
@@ -90,13 +122,6 @@
       "defaultValue": "child",
       "minlength": 2,
       "maxlength": 15
-    },
-    "createSecondDc": {
-      "type": "bool",
-      "metadata": {
-        "description": "Do you want a second DC in each domain? If false: parameters for DC2 and DC4 are ignored. "
-      },
-      "defaultValue": false
     },
     "RootDC1Name": {
       "type": "string",
@@ -162,23 +187,6 @@
       },
       "defaultValue": "10.0.0.7"
     },
-
-    "adminUsername": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the admin account for the Domain(s)"
-      },
-      "defaultValue": "adAdministrator",
-      "minlength": 6,
-      "maxlength": 15
-    },
-    "adminPassword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The password for the Administrator account of the new VMs and Domain(s)"
-      },
-      "minlength": 8
-    },
     "assetLocation": {
       "type": "string",
       "metadata": {
@@ -232,7 +240,7 @@
       }
     },
     {
-      "name": "VNet",
+      "name": "CreateVNET",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "properties": {
@@ -280,7 +288,7 @@
         ]
       },
       "dependsOn": [
-        "Microsoft.Resources/deployments/VNet"
+        "Microsoft.Resources/deployments/CreateVNET"
       ]
     },
     {
@@ -288,7 +296,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments','VNet')]",
+        "[resourceId('Microsoft.Resources/deployments','CreateVNET')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameRoot'))]"
       ],
       "properties": {
@@ -374,9 +382,10 @@
     {
       "name": "CreateADVM3",
       "type": "Microsoft.Resources/deployments",
+      "condition": "[parameters('createChildDomain')]",
       "apiVersion": "2016-09-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments','VNet')]",
+        "[resourceId('Microsoft.Resources/deployments','CreateVNET')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameChild'))]"
       ],
       "properties": {
@@ -424,6 +433,7 @@
       "name": "CreateChildDomain",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
+      "condition": "[parameters('createChildDomain')]",
       "dependsOn": [
         "Microsoft.Resources/deployments/CreateADVM3",
         "Microsoft.Resources/deployments/CreateForest"
@@ -470,7 +480,7 @@
       "apiVersion": "2016-09-01",
       "condition": "[parameters('createSecondDc')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments','VNet')]",
+        "[resourceId('Microsoft.Resources/deployments','CreateVNET')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameRoot'))]"
       ],
       "properties": {
@@ -562,9 +572,9 @@
       "name": "CreateADVM4",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "condition": "[parameters('createSecondDc')]",
+      "condition": "[and(parameters('createSecondDc'), parameters('createChildDomain'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments','VNet')]",
+        "[resourceId('Microsoft.Resources/deployments','CreateVNET')]",
         "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetNameChild'))]"
       ],
       "properties": {
@@ -611,7 +621,7 @@
     {
       "name": "ConfiguringChildDC4",
       "type": "Microsoft.Resources/deployments",
-      "condition": "[parameters('createSecondDc')]",
+      "condition": "[and(parameters('createSecondDc'), parameters('createChildDomain'))]",
       "apiVersion": "2016-09-01",
       "dependsOn": [
         "Microsoft.Resources/deployments/CreateADVM4",
