@@ -12,14 +12,16 @@ _(update: this is work in progress. I am rewriting it to support managed disks)_
 New features:
 * converted VMs to use managed disks.
 * Removed the storage account.
-* Made the hild domain is optional.
+* Made the child domain is optional.
 * Greatly simplified the optional parts of the template.
 
-This template will create a new Active Directory forest for you, with a 
-root and optional child domain. You can also choose between one or two Domain 
-Controllers per domain, and pick an Operating System version of 
-Windows Server 2012, Windows Server 2012 R2, or Windows Server 2016. You can 
-pick the VM size, and fully configure the IPv4 space of the VMs.
+This templates creates an Active Directory forest for you. The configuration
+is flexible. 
+* The root domain is always created; the child domain is optional. 
+* Choose to have one or two DCs per domain.
+* Choose names for the Domains, DCs, and network objects.  
+* Choose the VM type from a prepopulated list. 
+* Use either Windows Server 2012, Windows Serve 2012 R2, or Server 2016. 
 
 A forest with two domains in Azure is especially useful for AD-related 
 development, testing, and troubleshooting. Many enterprises have complex 
