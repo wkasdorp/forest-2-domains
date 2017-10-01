@@ -2,6 +2,55 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "createChildDomain": {
+      "type": "bool",
+      "metadata": {
+        "description": "Do you want a child domain? If false, the parameters for the child are ignored. "
+      },
+      "defaultValue": true
+    },
+    "createSecondDc": {
+      "type": "bool",
+      "metadata": {
+        "description": "Do you want a second DC in each domain? If false: parameters for DC2 and DC4 are ignored. "
+      },
+      "defaultValue": false
+    },
+    "DomainName": {
+      "type": "string",
+      "metadata": {
+        "description": "Full name for the forest root domain"
+      },
+      "defaultValue": "contoso.com",
+      "minlength": 4
+    },
+    "ChildDomainName": {
+      "type": "string",
+      "metadata": {
+        "description": "SHORT name for the child domain. New AD trees are not allowed."
+      },
+      "defaultValue": "child",
+      "minlength": 2,
+      "maxlength": 15
+    },
+
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the admin account for the Domain(s)"
+      },
+      "defaultValue": "adAdministrator",
+      "minlength": 6,
+      "maxlength": 15
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The password for the Administrator account of the new VMs and Domain(s)"
+      },
+      "minlength": 8
+    },
+
     "VMSize": {
       "type": "string",
       "allowedValues": [
@@ -35,6 +84,7 @@
         "description": "Windows Server Version."
       }
     },
+
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
@@ -74,55 +124,7 @@
       },
       "defaultValue": "10.0.0.0/24"
     },
-    "DomainName": {
-      "type": "string",
-      "metadata": {
-        "description": "Full name for the forest root domain"
-      },
-      "defaultValue": "contoso.com",
-      "minlength": 4
-    },
-    "createChildDomain": {
-      "type": "bool",
-      "metadata": {
-        "description": "Do you want a child domain? If false, the parameters for the child are ignored. "
-      },
-      "defaultValue": true
-    },
-    "createSecondDc": {
-      "type": "bool",
-      "metadata": {
-        "description": "Do you want a second DC in each domain? If false: parameters for DC2 and DC4 are ignored. "
-      },
-      "defaultValue": false
-    },
 
-    "adminUsername": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the admin account for the Domain(s)"
-      },
-      "defaultValue": "adAdministrator",
-      "minlength": 6,
-      "maxlength": 15
-    },
-    "adminPassword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The password for the Administrator account of the new VMs and Domain(s)"
-      },
-      "minlength": 8
-    },
-
-    "ChildDomainName": {
-      "type": "string",
-      "metadata": {
-        "description": "SHORT name for the child domain. New AD trees are not allowed."
-      },
-      "defaultValue": "child",
-      "minlength": 2,
-      "maxlength": 15
-    },
     "RootDC1Name": {
       "type": "string",
       "metadata": {
@@ -230,6 +232,7 @@
       "name": "[variables('adAvailabilitySetNameChild')]",
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2017-03-30",
+      "condition": "[parameters('createChildDomain')]",
       "location": "[resourceGroup().location]",
       "sku": {
         "name": "Aligned"
