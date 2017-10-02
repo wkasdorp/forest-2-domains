@@ -14,7 +14,7 @@
     "ChildDomainName": {
       "value": "child"
     },
-    "assetLocation": {
+    "_artifactsLocation": {
       "value": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"
     }
   }

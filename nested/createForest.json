@@ -20,12 +20,12 @@
     "DnsForwarder": {
       "type": "string"
     },
-    "assetLocation": {
+    "_artifactsLocation": {
       "type": "string"
     }
   },
   "variables": {
-    "adRootDC1ModulesURL": "[concat(parameters('assetLocation'),'/DSC/CreateADRootDC1.ps1.zip')]",
+    "adRootDC1ModulesURL": "[concat(parameters('_artifactsLocation'),'/DSC/CreateADRootDC1.ps1.zip')]",
     "adRootDC1ConfigurationFunction": "CreateADRootDC1.ps1\\CreateADRootDC1"
   },
   "resources": [

@@ -17,6 +17,7 @@ is flexible.
 * Choose names for the Domains, DCs, and network objects.  
 * Choose the VM type from a prepopulated list. 
 * Use either Windows Server 2012, Windows Server 2012 R2, or Windows Server 2016. 
+* Get a public IP endpoint to use with RDP, configured with a Network Security Group.
 
 A forest with two domains in Azure is especially useful for AD-related 
 development, testing, and troubleshooting. Many enterprises have complex 

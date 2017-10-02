@@ -189,7 +189,7 @@
       },
       "defaultValue": "10.0.0.7"
     },
-    "assetLocation": {
+    "_artifactsLocation": {
       "type": "string",
       "metadata": {
         "description": "The location of resources such as templates and DSC modules that the script depends on."
@@ -204,14 +204,14 @@
     "adAvailabilitySetNameRoot": "AvailSetRoot",
     "adAvailabilitySetNameChild": "AvailSetChild",
 
-    "firstVMTemplateUri": "[concat(parameters('assetLocation'),'/nested/CreateAndPrepnewVM.json')]",
-    "nextVMTemplateUri": "[concat(parameters('assetLocation'),'/nested/CreateAndPrepnewVM.json')]",
-    "vnetTemplateUri": "[concat(parameters('assetLocation'),'/nested/vnet.json')]",
-    "vnetwithDNSTemplateUri": "[concat(parameters('assetLocation'),'/nested/vnet-with-dns-server.json')]",
-    "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nested/configureADNextDC.json')]",
-    "createForestTemplateUri": "[concat(parameters('assetLocation'),'/nested/createForest.json')]",
-    "createChildDomainTemplateUri": "[concat(parameters('assetLocation'),'/nested/createChildDomain.json')]",
-    "nextDCConfigurationModulesURL": "[concat(parameters('assetLocation'),'/DSC/ConfigureADNextDC.ps1.zip')]",
+    "firstVMTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/CreateAndPrepnewVM.json')]",
+    "nextVMTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/CreateAndPrepnewVM.json')]",
+    "vnetTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/vnet.json')]",
+    "vnetwithDNSTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/vnet-with-dns-server.json')]",
+    "configureADNextDCTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/configureADNextDC.json')]",
+    "createForestTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/createForest.json')]",
+    "createChildDomainTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/createChildDomain.json')]",
+    "nextDCConfigurationModulesURL": "[concat(parameters('_artifactsLocation'),'/DSC/ConfigureADNextDC.ps1.zip')]",
     "nextDCConfigurationFunction": "ConfigureADNextDC.ps1\\ConfigureADNextDC"
   },
   "resources": [
@@ -336,8 +336,8 @@
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
           },
-          "assetLocation": {
-            "value": "[parameters('assetLocation')]"
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
           }
         }
       }
@@ -375,8 +375,8 @@
           "DNSForwarder": {
             "value": "[parameters('externalDNSForwarder')]"
           },
-          "assetLocation": {
-            "value": "[parameters('assetLocation')]"
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
           }
         }
       }
@@ -425,8 +425,8 @@
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
           },
-          "assetLocation": {
-            "value": "[parameters('assetLocation')]"
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
           }
         }
       }
@@ -470,8 +470,8 @@
           "DNSForwarder": {
             "value": "[parameters('RootDC1IPAddress')]"
           },
-          "assetLocation": {
-            "value": "[parameters('assetLocation')]"
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
           }
         }
       }
@@ -520,8 +520,8 @@
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
           },
-          "assetLocation": {
-            "value": "[parameters('assetLocation')]"
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
           }
         }
       }
@@ -614,8 +614,8 @@
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
           },
-          "assetLocation": {
-            "value": "[parameters('assetLocation')]"
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
           }
         }
       }
