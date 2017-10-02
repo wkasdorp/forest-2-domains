@@ -10,14 +10,6 @@ Warning: this template will **create running VMs**.
 Be sure to deallocate them when you no longer need them to avoid
  incurring costs. 
 
-### Update october 2017
-
-New features:
-* Converted VMs to use managed disks.
-* Removed the storage account.
-* Made the child domain is optional.
-* Greatly simplified the optional parts of the template.
-
 This template creates an Active Directory forest for you. The configuration
 is flexible. 
 * The root domain is always created; the child domain is optional. 
@@ -143,8 +135,14 @@ R2. While the standard Azure image VM image for 2008 R2
 This is almost undocumented, but the short version is that almost
  nothing worked for 2008 R2 so I had to give it up. 
 
-Enjoy, and let me know if you have suggestions or improvements. 
+### Update october 2017
 
-Willem Kasdorp, 10-1-2017. 
+New features:
+* Converted VMs to use managed disks.
+* Removed the storage account.
+* Made the child domain is optional.
+* Greatly simplified the optional parts of the template.
+
+Willem Kasdorp, 10-2-2017. 
 
 `Tags: active directory,forest,domain,DSC`
