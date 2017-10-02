@@ -2,20 +2,20 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "newStorageAccountName": {
-      "value": "GEN-UNIQUE"
-    },
     "adminUsername": {
       "value": "azureuser"
     },
-    "adminPassword": {
-      "value": "GEN-PASSWORD"
-    },
     "VMSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_DS1_v2"
     },
     "domainName": {
       "value": "contoso.com"
+    },
+    "ChildDomainName": {
+      "value": "child"
+    },
+    "assetLocation": {
+      "value": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"
     }
   }
 }

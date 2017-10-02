@@ -1,9 +1,22 @@
-# Create an Active Directory forest with two domains, and four DCs
+# Create an Active Directory forest with 1 or 2 domains, each with 1 or 2 DCs
 
-This template will create a new Active Directory forest for you, with a 
-root and child domain. You can choose between one or two Domain 
-Controllers per domain, and you can pick an Operating System version of 
-Windows Server 2012, Windows Server 2012 R2, or Windows Server 2016. 
+Click the button below to deploy a forest to Azure. 
+
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2Fmaster%2Fazuredeploy.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
+
+Warning: this template will **create running VMs**. 
+Be sure to deallocate them when you no longer need them to avoid
+ incurring costs. 
+
+This template creates an Active Directory forest for you. The configuration
+is flexible. 
+* The root domain is always created; the child domain is optional. 
+* Choose to have one or two DCs per domain.
+* Choose names for the Domains, DCs, and network objects.  
+* Choose the VM type from a prepopulated list. 
+* Use either Windows Server 2012, Windows Serve 2012 R2, or Server 2016. 
 
 A forest with two domains in Azure is especially useful for AD-related 
 development, testing, and troubleshooting. Many enterprises have complex 
@@ -16,17 +29,14 @@ Domain Controllers. A network security group (NSG) is added to limit
 incoming traffic allowing only Remote Desktop Protocol (RDP). You can 
 edit the NSG manually to permit traffic from your datacenters only. With 
 VNET peering it is easy to connect different VNETs in the same Azure 
-Region, so the fact that a dedicated VNET is used here is not a connectivity limitation anymore. 
+Region, so the fact that a dedicated VNET is used here is not a 
+connectivity limitation anymore. 
 
 The Domain Controllers are placed in an Availability Set to maximize 
 uptime. Each domain has its own Availability set. 
-A new storage account is created with an auto-generated name. 
-The storage account is of type "Premium" to allow VMs to use fast SSD 
-storage. You can pick the replication scope of the storage account. The 
-list of VM types is pre-populated with types that are suitable for DCs, 
-from very small to large. Be careful, not all combinations of storage 
-account type and VM type are possible. Deploy SSD VMs only to an Premium 
-storage account, and "normal" VMs to a non-premium storage account. 
+The VMs are provisioned with managed disks. The disk type (Standard or Premium)
+is derived from the VM size. If the name contains "DS", a Premium (SSD) 
+disk used. Otherwise, a Standard (HDD) type is used. 
 
 Most template parameters have sensible defaults. You will get a forest 
 root of _contoso.com_, a child domain called _child.contoso.com_, two 
@@ -38,16 +48,7 @@ Directory. The only thing you really need to do is to supply an admin
 password. Make sure it is 8 characters or more, and complex. You know 
 the drill. 
 
-Click the button below to deploy a forest to Azure. 
-Expect the whole thing to take about one hour. 
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2Fmaster%2Fazuredeploy.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
-</a>
-
-Warning: this template will **create two or four running VMs**. 
-Be sure to deallocate them when you no longer need them to avoid
- incurring costs. 
 
 ### Credits
 
@@ -85,13 +86,11 @@ I spent a lot of time factoring this solution to avoid redundancy,
 although I did not fully succeed in this. For repeatable jobs I use 
 subtemplates. Creating a new VM is a nice example. 
 
-Subtemplates are also used for simple choices, such as the option to use 
-one or two domain controllers. Each choice has its own template file, 
-depending on the parameter. For example, these are the two templates 
-used for VM creation. The yes/no parameter determines the filename. 
-
-* CreateAndPrepnewVM-no.json
-* CreateAndPrepnewVM-yes.json
+In the octobe 2017 update I greatly simplified the use
+of subtemplates. Using the ARM "condition()" function it's now
+possible to make deployments optional based on input parameters. 
+Using this, it is no longer needed to use two subtemplates for every 
+input choice.
 
 #### Desired State Configuration (DSC)
 
@@ -136,6 +135,14 @@ R2. While the standard Azure image VM image for 2008 R2
 This is almost undocumented, but the short version is that almost
  nothing worked for 2008 R2 so I had to give it up. 
 
-Enjoy, and let me know if you have suggestions or improvements. 
+### Update october 2017
 
-Willem Kasdorp, 2-9-2017. 
+New features:
+* Converted VMs to use managed disks.
+* Removed the storage account.
+* Made the child domain is optional.
+* Greatly simplified the optional parts of the template.
+
+Willem Kasdorp, 10-2-2017. 
+
+`Tags: active directory,forest,domain,DSC`
