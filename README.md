@@ -7,8 +7,8 @@ Click the button below to deploy a forest to Azure.
 </a>
 
 Warning: this template will **create running VMs**. 
-Be sure to deallocate them when you no longer need them to avoid
- incurring costs. 
+Be sure to deallocate them when you no longer need them
+to avoid incurring costs. 
 
 This template creates an Active Directory forest for you. The configuration
 is flexible. 
@@ -16,7 +16,7 @@ is flexible.
 * Choose to have one or two DCs per domain.
 * Choose names for the Domains, DCs, and network objects.  
 * Choose the VM type from a prepopulated list. 
-* Use either Windows Server 2012, Windows Serve 2012 R2, or Server 2016. 
+* Use either Windows Server 2012, Windows Server 2012 R2, or Windows Server 2016. 
 
 A forest with two domains in Azure is especially useful for AD-related 
 development, testing, and troubleshooting. Many enterprises have complex 
@@ -47,8 +47,6 @@ memory, one core and SSD storage. This is plenty for a simple Active
 Directory. The only thing you really need to do is to supply an admin 
 password. Make sure it is 8 characters or more, and complex. You know 
 the drill. 
-
-
 
 ### Credits
 

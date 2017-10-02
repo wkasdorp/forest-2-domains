@@ -209,8 +209,8 @@
     "vnetTemplateUri": "[concat(parameters('assetLocation'),'/nested/vnet.json')]",
     "vnetwithDNSTemplateUri": "[concat(parameters('assetLocation'),'/nested/vnet-with-dns-server.json')]",
     "configureADNextDCTemplateUri": "[concat(parameters('assetLocation'),'/nested/configureADNextDC.json')]",
-    "createForestTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/createForest.json')]",
-    "createChildDomainTemplateUri": "[concat(parameters('assetLocation'),'/nestedtemplates/createChildDomain.json')]",
+    "createForestTemplateUri": "[concat(parameters('assetLocation'),'/nested/createForest.json')]",
+    "createChildDomainTemplateUri": "[concat(parameters('assetLocation'),'/nested/createChildDomain.json')]",
     "nextDCConfigurationModulesURL": "[concat(parameters('assetLocation'),'/DSC/ConfigureADNextDC.ps1.zip')]",
     "nextDCConfigurationFunction": "ConfigureADNextDC.ps1\\ConfigureADNextDC"
   },
