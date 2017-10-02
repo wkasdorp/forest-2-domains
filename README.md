@@ -10,12 +10,12 @@ _(update: this is work in progress. I am rewriting it to support managed disks)_
 ### Update october 2017
 
 New features:
-* converted VMs to use managed disks.
+* Converted VMs to use managed disks.
 * Removed the storage account.
 * Made the child domain is optional.
 * Greatly simplified the optional parts of the template.
 
-This templates creates an Active Directory forest for you. The configuration
+This template creates an Active Directory forest for you. The configuration
 is flexible. 
 * The root domain is always created; the child domain is optional. 
 * Choose to have one or two DCs per domain.

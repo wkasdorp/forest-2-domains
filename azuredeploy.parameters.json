@@ -13,6 +13,9 @@
     },
     "domainName": {
       "value": "contoso.com"
+    },
+    "assetLocation": {
+      "value": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"
     }
   }
 }

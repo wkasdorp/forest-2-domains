@@ -19,7 +19,7 @@
     "DomainName": {
       "type": "string",
       "metadata": {
-        "description": "Full name for the forest root domain"
+        "description": "Full FQDN name for the forest root domain."
       },
       "defaultValue": "contoso.com",
       "minlength": 4
@@ -46,7 +46,7 @@
     "adminPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "The password for the Administrator account of the new VMs and Domain(s)"
+        "description": "The (complex!) password for the Administrator account of the new VMs and Domain(s)"
       },
       "minlength": 8
     },
@@ -88,7 +88,7 @@
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Virtual Network for the DC(s)"
+        "description": "The name of the Virtual Network for the DC(s)."
       },
       "defaultValue": "adVNET",
       "minlength": 2,
@@ -97,21 +97,21 @@
     "virtualNetworkAddressRange": {
       "type": "string",
       "metadata": {
-        "description": "The address range of the new VNET in CIDR format"
+        "description": "The address range of the new VNET in CIDR format."
       },
       "defaultValue": "10.0.0.0/22"
     },
     "externalDNSForwarder": {
       "type": "string",
       "metadata": {
-        "description": "DNS forwarder for all non-domain related DNS queries"
+        "description": "DNS forwarder for all non-domain related DNS queries."
       },
       "defaultValue": "8.8.8.8"
     },
     "adSubnetName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the subnet created in the new VNET"
+        "description": "The name of the subnet created in the new VNET."
       },
       "defaultValue": "adSubnet",
       "minlength": 2,
@@ -120,7 +120,7 @@
     "adSubnet": {
       "type": "string",
       "metadata": {
-        "description": "The address range of the subnet created in the new VNET"
+        "description": "The address range of the subnet created in the new VNET."
       },
       "defaultValue": "10.0.0.0/24"
     },
@@ -137,7 +137,7 @@
     "RootDC1IPAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the first DC of the root domain"
+        "description": "The IP address of the first DC of the root domain."
       },
       "defaultValue": "10.0.0.4"
     },
@@ -153,7 +153,7 @@
     "RootDC2IPAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the second DC of the root domain"
+        "description": "The IP address of the second DC of the root domain."
       },
       "defaultValue": "10.0.0.5"
     },
@@ -169,7 +169,7 @@
     "ChildDC3IPAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the first DC of the CHILD domain"
+        "description": "The IP address of the first DC of the CHILD domain."
       },
       "defaultValue": "10.0.0.6"
     },
@@ -185,7 +185,7 @@
     "ChildDC4IPAddress": {
       "type": "string",
       "metadata": {
-        "description": "The IP address of the second DC of the CHILD domain"
+        "description": "The IP address of the second DC of the CHILD domain."
       },
       "defaultValue": "10.0.0.7"
     },
