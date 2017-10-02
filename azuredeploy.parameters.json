@@ -5,14 +5,14 @@
     "adminUsername": {
       "value": "azureuser"
     },
-    "adminPassword": {
-      "value": "GEN-PASSWORD"
-    },
     "VMSize": {
-      "value": "Standard_DS2_v2"
+      "value": "Standard_DS1_v2"
     },
     "domainName": {
       "value": "contoso.com"
+    },
+    "ChildDomainName": {
+      "value": "child"
     },
     "assetLocation": {
       "value": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"

@@ -1,11 +1,14 @@
 # Create an Active Directory forest with 1 or 2 domains, each with 1 or 2 DCs
 
-_(update: this is work in progress. I am rewriting it to support managed disks)_
+Click the button below to deploy a forest to Azure. 
 
-# Deploy 2.0-DEV
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2F2.0-dev%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2Fmaster%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
+
+Warning: this template will **create running VMs**. 
+Be sure to deallocate them when you no longer need them to avoid
+ incurring costs. 
 
 ### Update october 2017
 
@@ -53,16 +56,7 @@ Directory. The only thing you really need to do is to supply an admin
 password. Make sure it is 8 characters or more, and complex. You know 
 the drill. 
 
-Click the button below to deploy a forest to Azure. 
-Expect the whole thing to take about one hour. 
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2Fmaster%2Fazuredeploy.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png"/>
-</a>
-
-Warning: this template will **create running VMs**. 
-Be sure to deallocate them when you no longer need them to avoid
- incurring costs. 
 
 ### Credits
 
@@ -152,3 +146,5 @@ This is almost undocumented, but the short version is that almost
 Enjoy, and let me know if you have suggestions or improvements. 
 
 Willem Kasdorp, 10-1-2017. 
+
+`Tags: active directory,forest,domain,DSC`
