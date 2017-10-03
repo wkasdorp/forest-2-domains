@@ -25,10 +25,14 @@
     },
     "_artifactsLocation": {
       "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "defaultValue": ""
     }
   },
   "variables": {
-    "adChildDomainDC1ModulesURL": "[concat(parameters('_artifactsLocation'),'/DSC/CreateADChildDomainDC1.ps1.zip')]",
+    "adChildDomainDC1ModulesURL": "[concat(parameters('_artifactsLocation'),'/DSC/CreateADChildDomainDC1.ps1.zip',parameters('_artifactsLocationSasToken'))]",
     "adChildDomainDC1ConfigurationFunction": "CreateADChildDomainDC1.ps1\\CreateADChildDomainDC1"
   },
   "resources": [

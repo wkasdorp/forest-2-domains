@@ -65,12 +65,6 @@
       "metadata": {
         "description": "Windows Server Version"
       }
-    },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "The location of resources such as templates and DSC modules that the script depends on."
-      }
     }
   },
   "variables": {

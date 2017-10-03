@@ -22,10 +22,14 @@
     },
     "_artifactsLocation": {
       "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "defaultValue": ""
     }
   },
   "variables": {
-    "adRootDC1ModulesURL": "[concat(parameters('_artifactsLocation'),'/DSC/CreateADRootDC1.ps1.zip')]",
+    "adRootDC1ModulesURL": "[concat(parameters('_artifactsLocation'),'/DSC/CreateADRootDC1.ps1.zip',parameters('_artifactsLocationSasToken'))]",
     "adRootDC1ConfigurationFunction": "CreateADRootDC1.ps1\\CreateADRootDC1"
   },
   "resources": [
