@@ -42,7 +42,7 @@ disk used. Otherwise, a Standard (HDD) type is used.
 Most template parameters have sensible defaults. You will get a forest 
 root of _contoso.com_, a child domain called _child.contoso.com_, two 
 DCs in each domain, a small IP space of 10.0.0.0/22 (meaning 10.0.0.0 up 
-to 1.0.0.3.255), etc. Each VM will have the AD-related management tools installed.
+to 10.0.3.255), etc. Each VM will have the AD-related management tools installed.
 By default, the VMs are of type DS1_v2, meaning 3.5 GB of 
 memory, one core and SSD storage. This is plenty for a simple Active 
 Directory. The only thing you really need to do is to supply an admin 
@@ -139,8 +139,8 @@ This is almost undocumented, but the short version is that almost
 New features:
 * Converted VMs to use managed disks.
 * Removed the storage account.
-* Made the child domain is optional.
-* Greatly simplified the optional parts of the template.
+* Made the child domain optional.
+* Greatly simplified the optional parts of the template using the new "condition" keyword.
 
 Willem Kasdorp, 10-2-2017. 
 
