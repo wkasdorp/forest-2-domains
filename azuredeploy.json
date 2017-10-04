@@ -5,7 +5,7 @@
     "createChildDomain": {
       "type": "bool",
       "metadata": {
-        "description": "Do you want a child domain? If false, the parameters for the child are ignored. "
+        "description": "Do you want a child domain? If false, the parameters for the child domain are ignored. "
       },
       "defaultValue": true
     },
@@ -88,7 +88,7 @@
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Virtual Network for the DC(s)."
+        "description": "The name of the new VNET for the DC(s)."
       },
       "defaultValue": "adVNET",
       "minlength": 2,
@@ -104,14 +104,14 @@
     "externalDNSForwarder": {
       "type": "string",
       "metadata": {
-        "description": "DNS forwarder for all non-domain related DNS queries."
+        "description": "DNS forwarder for all non-domain (external) related DNS queries."
       },
       "defaultValue": "8.8.8.8"
     },
     "adSubnetName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the subnet created in the new VNET."
+        "description": "The name of the VM subnet created in the new VNET."
       },
       "defaultValue": "adSubnet",
       "minlength": 2,
