@@ -1,7 +1,11 @@
 # Create an Active Directory forest with 1 or 2 domains, each with 1 or 2 DCs
 
-Click the button below to deploy a forest to Azure. 
+Use this to deploy from Azure Quicktemplates:
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2F301-create-ad-forest-with-subdomain%2Fazuredeploy.json" target="_blank">
+    <img src="http://azuredeploy.net/deploybutton.png"/>
+</a>
 
+Click the button below to deploy a forest to Azure using the templates in this Repo:
 <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2Fmaster%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
@@ -77,15 +81,14 @@ Initially I created the root domain on DC1. Then, I promoted DC2 (root)
 and DC3 (child) at the same time. After much testing I discovered that this
 would _sometimes_ go wrong because DC3 would take DC2 as a DNS source
 when it was not ready. So I reordered the dependencies to first promote
- DC1 (root), then DC3 (child), and only then add secondary DCs to both domains.
-These subtle things matter. 
+ DC1 (root), then DC3 (child), and only then add secondary DCs to both domains. 
 
 #### Subtemplates
 I spent a lot of time factoring this solution to avoid redundancy, 
 although I did not fully succeed in this. For repeatable jobs I use 
 subtemplates. Creating a new VM is a nice example. 
 
-In the octobe 2017 update I greatly simplified the use
+In the October 2017 update I greatly simplified the use
 of subtemplates. Using the ARM "condition()" function it's now
 possible to make deployments optional based on input parameters. 
 Using this, it is no longer needed to use two subtemplates for every 
@@ -134,7 +137,7 @@ R2. While the standard Azure image VM image for 2008 R2
 This is almost undocumented, but the short version is that almost
  nothing worked for 2008 R2 so I had to give it up. 
 
-### Update october 2017
+### Update October 2017
 
 New features:
 * Converted VMs to use managed disks.
