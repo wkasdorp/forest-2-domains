@@ -104,7 +104,7 @@
       "metadata": {
         "description": "DNS forwarder for all non-domain (external) related DNS queries."
       },
-      "defaultValue": "8.8.8.8"
+      "defaultValue": "168.63.129.16"
     },
     "adSubnetName": {
       "type": "string",
