@@ -14,7 +14,7 @@ Click the button below to deploy a forest to Azure using the templates in this R
 
 Warning: this template will **create running VMs**. 
 Be sure to deallocate them when you no longer need them
-to avoid incurring costs. 
+to avoid incurring costs.
 
 This template creates an Active Directory forest for you. The configuration
 is flexible. 
@@ -147,6 +147,6 @@ New features:
 * Made the child domain optional.
 * Greatly simplified the optional parts of the template using the new "condition" keyword.
 
-Willem Kasdorp, 10-2-2017. 
+Willem Kasdorp, 10-2-2017.
 
 `Tags: active directory,forest,domain,DSC`
