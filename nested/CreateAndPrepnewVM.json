@@ -72,8 +72,6 @@
 
     "vmPublicIPName": "[concat(parameters('vmName'),'PublicIP')]",
     "vmNicName": "[concat(parameters('vmName'),'Nic')]",
-    "vmNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNicName'))]",
-    "vmIPConfigID": "[concat(variables('vmNicId'),'/ipConfigurations/ipconfig1')]",
     "vmDataDisk": "[concat(parameters('vmName'),'-managed-DataDisk1')]",
     "vmOSDisk": "[concat(parameters('vmName'),'-managed-OSDisk')]",
 

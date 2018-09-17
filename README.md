@@ -18,6 +18,7 @@ to avoid incurring costs.
 
 This template creates an Active Directory forest for you. The configuration
 is flexible. 
+
 * The root domain is always created; the child domain is optional. 
 * Choose to have one or two DCs per domain.
 * Choose names for the Domains, DCs, and network objects.  
@@ -37,13 +38,13 @@ incoming traffic allowing only Remote Desktop Protocol (RDP). You can
 edit the NSG manually to permit traffic from your datacenters only. With 
 VNET peering it is easy to connect different VNETs in the same Azure 
 Region, so the fact that a dedicated VNET is used here is not a 
-connectivity limitation anymore. 
+connectivity limitation anymore.
 
 The Domain Controllers are placed in an Availability Set to maximize 
 uptime. Each domain has its own Availability set. 
 The VMs are provisioned with managed disks. The disk type (Standard or Premium)
 is derived from the VM size. If the name contains "DS", a Premium (SSD) 
-disk used. Otherwise, a Standard (HDD) type is used. 
+disk used. Otherwise, a Standard (HDD) type is used.
 
 Most template parameters have sensible defaults. You will get a forest 
 root of _contoso.com_, a child domain called _child.contoso.com_, two 
@@ -142,11 +143,16 @@ This is almost undocumented, but the short version is that almost
 ### Update October 2017
 
 New features:
+
 * Converted VMs to use managed disks.
 * Removed the storage account.
 * Made the child domain optional.
 * Greatly simplified the optional parts of the template using the new "condition" keyword.
 
-Willem Kasdorp, 10-2-2017.
+### Update September 2018
+
+* Added B-series VM.
+
+Willem Kasdorp, 9-17-2017.
 
 `Tags: active directory,forest,domain,DSC`
