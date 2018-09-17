@@ -151,6 +151,8 @@ New features:
 
 ### Update September 2018
 
+New Features:
+
 * Added B-series VM.
 
 Willem Kasdorp, 9-17-2017.
