@@ -55,14 +55,26 @@
     },
     "imageSKU": {
       "type": "string",
+      "metadata": {
+        "description": "Windows Server Version"
+      },            
       "defaultValue": "2012-R2-Datacenter",
       "allowedValues": [
         "2012-Datacenter",
         "2012-R2-Datacenter",
         "2016-Datacenter"
+      ] 
+    },
+    "diskType": {
+      "type": "string",
+      "defaultValue": "StandardSSD_LRS",
+      "allowedValues": [
+        "StandardSSD_LRS",
+        "Standard_LRS",
+        "Premium_LRS"
       ],
       "metadata": {
-        "description": "Windows Server Version"
+        "description": "The Storage type of the data Disks."
       }
     }
   },
@@ -149,7 +161,10 @@
           "osDisk": {
             "name": "[variables('vmOSDisk')]",
             "caching": "ReadWrite",
-            "createOption": "FromImage"
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "[parameters('diskType')]"
+            }
           },
           "dataDisks": [
             {
@@ -157,7 +172,10 @@
               "caching": "None",
               "lun": 0,
               "diskSizeGB": "[variables('vmDataDiskSize')]",
-              "createOption": "Empty"
+              "createOption": "Empty",
+              "managedDisk": {
+                "storageAccountType": "[parameters('diskType')]"
+              }
             }
           ]
         },
@@ -171,8 +189,8 @@
       },
       "resources": [
         {
-          "apiVersion": "2015-06-15",
-          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "apiVersion": "2017-03-30",
+          "type": "extensions",
           "name": "[concat(parameters('vmName'),'/vmEnablePSScript')]",
           "location": "[resourceGroup().location]",
           "dependsOn": [

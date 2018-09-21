@@ -154,7 +154,8 @@ New features:
 New Features:
 
 * Added B-series VM.
+* Added Standard SSD disks (now default), and made the choice for disk type explicit. 
 
-Willem Kasdorp, 9-17-2017.
+Willem Kasdorp, 9-21-2018.
 
 `Tags: active directory,forest,domain,DSC`

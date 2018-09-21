@@ -85,7 +85,18 @@
         "description": "Windows Server Version."
       }
     },
-
+    "diskType": {
+      "type": "string",
+      "defaultValue": "StandardSSD_LRS",
+      "allowedValues": [
+        "StandardSSD_LRS",
+        "Standard_LRS",
+        "Premium_LRS"
+      ],
+      "metadata": {
+        "description": "The Storage type of the data Disks. Make sure it's compatible with the VM Size."
+      }
+    },
     "virtualNetworkName": {
       "type": "string",
       "metadata": {
@@ -206,8 +217,6 @@
     }
   },
   "variables": {
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-    "adSubnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
     "adAvailabilitySetNameRoot": "AvailSetRoot",
     "adAvailabilitySetNameChild": "AvailSetChild",
@@ -286,7 +295,7 @@
           {
             "name": "Allow_Any_RDP",
             "properties": {
-              "protocol": "TCP",
+              "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "3389",
               "sourceAddressPrefix": "*",
@@ -340,6 +349,9 @@
           },
           "vmSize": {
             "value": "[parameters('VMSize')]"
+          },
+          "diskType": {
+            "value": "[parameters('diskType')]"
           },
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
@@ -429,6 +441,9 @@
           },
           "vmSize": {
             "value": "[parameters('VMSize')]"
+          },
+          "diskType": {
+            "value": "[parameters('diskType')]"
           },
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
@@ -525,6 +540,9 @@
           "vmSize": {
             "value": "[parameters('VMSize')]"
           },
+          "diskType": {
+            "value": "[parameters('diskType')]"
+          },
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
           }
@@ -615,6 +633,9 @@
           },
           "vmSize": {
             "value": "[parameters('VMSize')]"
+          },
+          "diskType": {
+            "value": "[parameters('diskType')]"
           },
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
