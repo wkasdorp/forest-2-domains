@@ -96,7 +96,7 @@
       "name": "[variables('vmPublicIPName')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2018-08-01",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
@@ -108,7 +108,7 @@
     {
       "name": "[variables('vmNicName')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "apiVersion": "2016-10-01",
+      "apiVersion": "2018-08-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('vmPublicIPName'))]"
@@ -134,7 +134,7 @@
     {
       "name": "[parameters('vmName')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2017-03-30",
+      "apiVersion": "2018-06-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkInterfaces',variables('vmNicName'))]"
@@ -189,7 +189,7 @@
       },
       "resources": [
         {
-          "apiVersion": "2017-03-30",
+          "apiVersion": "2018-06-01",
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "[concat(parameters('vmName'),'/vmEnablePSScript')]",
           "location": "[resourceGroup().location]",
