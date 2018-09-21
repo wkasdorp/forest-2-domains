@@ -377,9 +377,6 @@
           "vmName": {
             "value": "[parameters('RootDC1Name')]"
           },
-          "location": {
-            "value": "[resourceGroup().location]"
-          },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
           },
@@ -470,9 +467,6 @@
         "parameters": {
           "vmName": {
             "value": "[parameters('ChildDC3Name')]"
-          },
-          "location": {
-            "value": "[resourceGroup().location]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
