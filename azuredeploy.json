@@ -94,7 +94,7 @@
         "Premium_LRS"
       ],
       "metadata": {
-        "description": "The Storage type of the data Disks. Make sure it's compatible with the VM Size."
+        "description": "The Storage type of the data Disks. Use Premium only with *s or *DS* VM types."
       }
     },
     "virtualNetworkName": {

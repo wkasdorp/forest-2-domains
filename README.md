@@ -153,9 +153,9 @@ New features:
 
 New Features:
 
-* Added B-series VM.
-* Added Standard SSD disks (now default), and made the choice for disk type explicit. 
+* Added B-series (burstable) VM, very suitable to run DCs cheaply. 
+* Added Standard SSD disks (now default), and made the choice for disk type explicit. This type is well suited for typical DC performance. 
 
-Willem Kasdorp, 9-21-2018.
+Willem Kasdorp, 9-22-2018.
 
 `Tags: active directory,forest,domain,DSC`
