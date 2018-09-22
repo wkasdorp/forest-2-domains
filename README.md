@@ -51,8 +51,10 @@ root of _contoso.com_, a child domain called _child.contoso.com_, two
 DCs in each domain, a small IP space of 10.0.0.0/22 (meaning 10.0.0.0 up 
 to 10.0.3.255), etc. Each VM will have the AD-related management tools installed.
 By default, the VMs are of type DS1_v2, meaning 3.5 GB of 
-memory, one core and SSD storage. This is plenty for a simple Active 
-Directory. The only thing you really need to do is to supply an admin 
+memory and one CPU core. This is plenty for a simple Active 
+Directory. The disk type defaults to Standard SSD, which is low latency but also
+low IOPS. This is fine for Active Directory.
+The only thing you really need to do is to supply an admin 
 password. Make sure it is 8 characters or more, and complex. You know 
 the drill. 
 
@@ -119,7 +121,7 @@ developing or maintaining my own:
 
 * xActivedirectory
 * xNetworking
-* xDisk
+* xStorage
 * cDisk
 
 If you look into the DSC Configurations that I use you will see that I 
@@ -155,6 +157,7 @@ New Features:
 
 * Added B-series (burstable) VM, very suitable to run DCs cheaply. 
 * Added Standard SSD disks (now default), and made the choice for disk type explicit. This type is well suited for typical DC performance. 
+* general cleanup: updated all APIs to the most recent ones, updated DSC modules to the latest.
 
 Willem Kasdorp, 9-22-2018.
 
