@@ -7,8 +7,10 @@ Use this to deploy from Azure Quicktemplates:
 </a>
 
 Click the button below to deploy a forest to Azure using the templates in this Repo:
-**TEMP**
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2Ftree%2Fmerge-with-quicktemplates%2Fazuredeploy.json" target="_blank">
+
+**TEMP link to merge-with-quicktemplate branch**
+
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwkasdorp%2Fforest-2-domains%2Ftmerge-with-quicktemplates%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
