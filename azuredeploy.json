@@ -201,12 +201,19 @@
       },
       "defaultValue": "10.0.0.7"
     },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources; takes its default from the Resource Group."
+      }
+    },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
         "description": "The location of resources such as templates and DSC modules that the script depends on. No need to change unless you copy or fork this template."
       },
-      "defaultValue": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/master"
+      "defaultValue": "https://raw.githubusercontent.com/wkasdorp/forest-2-domains/tree/merge-with-quicktemplates"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
@@ -220,7 +227,6 @@
     "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
     "adAvailabilitySetNameRoot": "AvailSetRoot",
     "adAvailabilitySetNameChild": "AvailSetChild",
-
     "firstVMTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/CreateAndPrepnewVM.json',parameters('_artifactsLocationSasToken'))]",
     "nextVMTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/CreateAndPrepnewVM.json',parameters('_artifactsLocationSasToken'))]",
     "vnetTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/vnet.json',parameters('_artifactsLocationSasToken'))]",
@@ -236,7 +242,7 @@
       "name": "[variables('adAvailabilitySetNameRoot')]",
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2018-06-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Aligned"
       },
@@ -250,7 +256,7 @@
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2018-06-01",
       "condition": "[parameters('createChildDomain')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Aligned"
       },
@@ -289,7 +295,7 @@
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('adNSGName')]",
       "apiVersion": "2018-08-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
           {
@@ -376,6 +382,9 @@
         "parameters": {
           "vmName": {
             "value": "[parameters('RootDC1Name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -467,6 +476,9 @@
         "parameters": {
           "vmName": {
             "value": "[parameters('ChildDC3Name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -564,7 +576,7 @@
             "value": "[parameters('RootDC2Name')]"
           },
           "location": {
-            "value": "[resourceGroup().location]"
+            "value": "[parameters('location')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -658,7 +670,7 @@
             "value": "[parameters('ChildDC4Name')]"
           },
           "location": {
-            "value": "[resourceGroup().location]"
+            "value": "[parameters('location')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -681,7 +693,6 @@
         }
       }
     },
-
     {
       "name": "UpdateVNet",
       "type": "Microsoft.Resources/deployments",
@@ -723,5 +734,3 @@
 
   ]
 }
-
-

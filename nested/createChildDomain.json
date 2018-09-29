@@ -26,6 +26,10 @@
     "_artifactsLocationSasToken": {
       "type": "securestring",
       "defaultValue": ""
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
     }
   },
   "variables": {
@@ -37,7 +41,7 @@
       "name": "[concat(parameters('vmName'),'/CreateADChildDomain1')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2018-06-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "publisher": "Microsoft.Powershell",
         "type": "DSC",
