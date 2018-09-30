@@ -44,9 +44,7 @@ connectivity limitation anymore.
 
 The Domain Controllers are placed in an Availability Set to maximize 
 uptime. Each domain has its own Availability set. 
-The VMs are provisioned with managed disks. The disk type (Standard or Premium)
-is derived from the VM size. If the name contains "DS", a Premium (SSD) 
-disk used. Otherwise, a Standard (HDD) type is used.
+The VMs are provisioned with managed disks. 
 
 Most template parameters have sensible defaults. You will get a forest 
 root of _contoso.com_, a child domain called _child.contoso.com_, two 
@@ -56,7 +54,7 @@ By default, the VMs are of type DS1_v2, meaning 3.5 GB of
 memory and one CPU core. This is plenty for a simple Active 
 Directory. The disk type defaults to Standard SSD, which is low latency but also
 low IOPS. This is fine for Active Directory.
-The only thing you really need to do is to supply an admin 
+The only thing you really need to do is to supply an administrator name and 
 password. Make sure it is 8 characters or more, and complex. You know 
 the drill. 
 
@@ -161,6 +159,6 @@ New Features:
 * Added Standard SSD disks (now default), and made the choice for disk type explicit. This type is well suited for typical DC performance. 
 * general cleanup: updated all APIs to the most recent ones, updated DSC modules to the latest.
 
-Willem Kasdorp, 9-22-2018.
+Willem Kasdorp, 9-30-2018.
 
 `Tags: active directory,forest,domain,DSC`
