@@ -33,7 +33,6 @@
       "minlength": 2,
       "maxlength": 15
     },
-
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -48,7 +47,6 @@
       },
       "minlength": 8
     },
-
     "VMSize": {
       "type": "string",
       "allowedValues": [
@@ -58,6 +56,7 @@
         "Standard_A1_v2",
         "Standard_A2_v2",
         "Standard_A3",
+        "Standard_B1ms",
         "Standard_B2s",
         "Standard_B2ms",
         "Standard_B4ms",
@@ -69,13 +68,13 @@
         "Standard_DS3_v2"
       ],
       "metadata": {
-        "description": "The size and type of the VM. DS types will get Premium (managed) disks."
+        "description": "The size and type of the VM. *_DS* or *s types support Premium Disks."
       },
       "defaultValue": "Standard_DS1_v2"
     },
     "imageSKU": {
       "type": "string",
-      "defaultValue": "2012-R2-Datacenter",
+      "defaultValue": "2016-Datacenter",
       "allowedValues": [
         "2012-Datacenter",
         "2012-R2-Datacenter",
@@ -94,7 +93,7 @@
         "Premium_LRS"
       ],
       "metadata": {
-        "description": "The Storage type of the data Disks. Use Premium only with *s or *DS* VM types."
+        "description": "The Storage type of the data Disks. Use Premium_LRS only with *s or *DS* VM types."
       }
     },
     "virtualNetworkName": {
@@ -136,7 +135,6 @@
       },
       "defaultValue": "10.0.0.0/24"
     },
-
     "RootDC1Name": {
       "type": "string",
       "metadata": {
@@ -201,6 +199,13 @@
       },
       "defaultValue": "10.0.0.7"
     },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources; takes its default from the Resource Group."
+      }
+    },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
@@ -220,7 +225,6 @@
     "adNSGName": "[concat(parameters('adSubnetName'),'NSG')]",
     "adAvailabilitySetNameRoot": "AvailSetRoot",
     "adAvailabilitySetNameChild": "AvailSetChild",
-
     "firstVMTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/CreateAndPrepnewVM.json',parameters('_artifactsLocationSasToken'))]",
     "nextVMTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/CreateAndPrepnewVM.json',parameters('_artifactsLocationSasToken'))]",
     "vnetTemplateUri": "[concat(parameters('_artifactsLocation'),'/nested/vnet.json',parameters('_artifactsLocationSasToken'))]",
@@ -236,7 +240,7 @@
       "name": "[variables('adAvailabilitySetNameRoot')]",
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2018-06-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Aligned"
       },
@@ -250,7 +254,7 @@
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2018-06-01",
       "condition": "[parameters('createChildDomain')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Aligned"
       },
@@ -281,6 +285,9 @@
           },
           "subnetRange": {
             "value": "[parameters('adSubnet')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
@@ -289,7 +296,7 @@
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('adNSGName')]",
       "apiVersion": "2018-08-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
           {
@@ -355,11 +362,13 @@
           },
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
     },
-
     {
       "name": "CreateForest",
       "type": "Microsoft.Resources/deployments",
@@ -376,6 +385,9 @@
         "parameters": {
           "vmName": {
             "value": "[parameters('RootDC1Name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -398,7 +410,6 @@
         }
       }
     },
-
     {
       "name": "CreateADVM3",
       "type": "Microsoft.Resources/deployments",
@@ -444,11 +455,13 @@
           },
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
     },
-
     {
       "name": "CreateChildDomain",
       "type": "Microsoft.Resources/deployments",
@@ -468,6 +481,9 @@
           "vmName": {
             "value": "[parameters('ChildDC3Name')]"
           },
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
           },
@@ -480,7 +496,6 @@
           "childDomainName": {
             "value": "[parameters('ChildDomainName')]"
           },
-
           "DNSForwarder": {
             "value": "[parameters('RootDC1IPAddress')]"
           },
@@ -493,7 +508,6 @@
         }
       }
     },
-
     {
       "name": "CreateADVM2",
       "type": "Microsoft.Resources/deployments",
@@ -539,11 +553,13 @@
           },
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
     },
-
     {
       "name": "ConfiguringRootDC2",
       "type": "Microsoft.Resources/deployments",
@@ -564,7 +580,7 @@
             "value": "[parameters('RootDC2Name')]"
           },
           "location": {
-            "value": "[resourceGroup().location]"
+            "value": "[parameters('location')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -587,7 +603,6 @@
         }
       }
     },
-
     {
       "name": "CreateADVM4",
       "type": "Microsoft.Resources/deployments",
@@ -633,11 +648,13 @@
           },
           "imageSKU": {
             "value": "[parameters('imageSKU')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
     },
-
     {
       "name": "ConfiguringChildDC4",
       "type": "Microsoft.Resources/deployments",
@@ -658,7 +675,7 @@
             "value": "[parameters('ChildDC4Name')]"
           },
           "location": {
-            "value": "[resourceGroup().location]"
+            "value": "[parameters('location')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -681,7 +698,6 @@
         }
       }
     },
-
     {
       "name": "UpdateVNet",
       "type": "Microsoft.Resources/deployments",
@@ -716,12 +732,12 @@
               "[parameters('RootDC1IPAddress')]",
               "[parameters('RootDC2IPAddress')]"
             ]
+          },
+          "location": {
+            "value": "[parameters('location')]"
           }
         }
       }
     }
-
   ]
 }
-
-
