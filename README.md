@@ -158,6 +158,10 @@ New Features:
 * Added the possibilty to deploy to a location different to that of the Resource Group.
 * general cleanup: updated all APIs to the most recent ones, updated DSC modules to the latest.
 
+### Update December 2018
+
+* Added Windows Server 2019
+
 Willem Kasdorp, 9-30-2018.
 
 `Tags: active directory,forest,domain,DSC`
