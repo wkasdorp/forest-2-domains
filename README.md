@@ -132,12 +132,7 @@ Apparently the DNS service is not stable enough directly after
 installation to support this module. I added a wait loop to solve this 
 issue. 
 
-Finally, I had to use an external script resource to enable the 
-Powershell execution policy specifically for Windows Server 2012 
-(non-R2). By default, DSC does not work here. I injected a small 
-powershell script to set the execution policy to unrestricted. 
-
-For similar reasons, this template does not support Windows Server 2008 
+This template does not support Windows Server 2008 
 R2. While the standard Azure image VM image for 2008 R2
  supports DSC now, it is still highly limited in which modules work or not. 
 This is almost undocumented, but the short version is that almost
