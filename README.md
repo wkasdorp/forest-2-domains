@@ -63,7 +63,9 @@ This project was initially copied from the
 project by Simon Davies, part of the the Azure Quickstart templates.
 
 ### Tech notes
+
 #### DNS
+
 The hard part about creating forests, domains and Domain Controllers in 
 Azure is the managing of DNS Domains and zones, and DNS references. AD strongly depends on 
 its own DNS domains, and during domain creation the relevant zones must 
@@ -87,6 +89,7 @@ when it was not ready. So I reordered the dependencies to first promote
  DC1 (root), then DC3 (child), and only then add secondary DCs to both domains. 
 
 #### Subtemplates
+
 I spent a lot of time factoring this solution to avoid redundancy, 
 although I did not fully succeed in this. For repeatable jobs I use 
 subtemplates. Creating a new VM is a nice example. 
