@@ -1,3 +1,10 @@
 Set-ExecutionPolicy Unrestricted
+
+#
+# Install required DSC modules before we get started. 
+#
 Install-PackageProvider -Name NuGet -Force
 Install-Module -Name ComputerManagementDSC -Force
+Install-Module -Name xActiveDirectory -Force
+Install-Module -Name xNetworking -Force
+Install-Module -Name xStorage -Force
