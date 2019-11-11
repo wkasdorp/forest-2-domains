@@ -162,6 +162,10 @@ New Features:
 
 * Added Windows Server 2019
 
-Willem Kasdorp, 9-30-2018.
+### Update November 2019
+
+* workaround breaking change in WMF causing reboot to fail (not happen)
+
+Willem Kasdorp, 11-11-2019.
 
 `Tags: active directory,forest,domain,DSC`
