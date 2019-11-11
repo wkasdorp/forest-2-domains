@@ -95,10 +95,10 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
 
-    "scriptFolderName": "scripts/",
+    "scriptFolderName": "/scripts/",
     "scriptName": "Configure-DSC.ps1",
     "scriptDownLoad": "[concat(parameters('_artifactsLocation'),variables('scriptFoldername'), variables('scriptName'), parameters('_artifactsLocationSasToken'))]",
-    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ',variables('scriptDownLoad'),' -SkipNetworkProfileCheck $true')]"
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File ',variables('scriptName'),' -SkipNetworkProfileCheck $true')]"
   },
   "resources": [
     {
