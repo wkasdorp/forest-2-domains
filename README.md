@@ -123,7 +123,8 @@ developing or maintaining my own:
 * xActivedirectory
 * xNetworking
 * xStorage
-* cDisk
+* xDisk
+* ComputerManagementDSC
 
 If you look into the DSC Configurations that I use you will see that I 
 had to add a Script resource to set the DNS forwarder. This is 
@@ -131,12 +132,6 @@ unfortunate (a hack) but the xDNSServer DSC module did not work for me.
 Apparently the DNS service is not stable enough directly after 
 installation to support this module. I added a wait loop to solve this 
 issue. 
-
-This template does not support Windows Server 2008 
-R2. While the standard Azure image VM image for 2008 R2
- supports DSC now, it is still highly limited in which modules work or not. 
-This is almost undocumented, but the short version is that almost
- nothing worked for 2008 R2 so I had to give it up. 
 
 ### Update October 2017
 
@@ -162,7 +157,7 @@ New Features:
 
 ### Update November 2019
 
-* workaround breaking change in WMF causing reboot to fail.
+* workaround breaking change in WMF causing reboot after AD install to fail.
 * removed static DSC packages, now downloading the latest during deployment.
 * removed Windows 2012 (R1) from list of OS. Too hard to get DSC to work. 
 
