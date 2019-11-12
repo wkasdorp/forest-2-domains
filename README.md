@@ -23,7 +23,7 @@ is flexible.
 * Choose to have one or two DCs per domain.
 * Choose names for the Domains, DCs, and network objects.  
 * Choose the VM type from a prepopulated list. 
-* Use either Windows Server 2012, Windows Server 2012 R2, or Windows Server 2016. 
+* Use either Windows Server 2012 R2, Windows Server 2016, or Windows Server 2019.
 * Get a public IP endpoint to use with RDP, configured with a Network Security Group.
 
 A forest with two domains in Azure is especially useful for AD-related 
@@ -162,7 +162,9 @@ New Features:
 
 ### Update November 2019
 
-* workaround breaking change in WMF causing reboot to fail (not happen)
+* workaround breaking change in WMF causing reboot to fail.
+* removed static DSC packages, now downloading the latest during deployment.
+* removed Windows 2012 (R1) from list of OS. Too hard to get DSC to work. 
 
 Willem Kasdorp, 11-11-2019.
 
