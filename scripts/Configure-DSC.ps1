@@ -1,9 +1,8 @@
-#Requires –Version 4
-
+#Requires -Version 4
 #
 # set policy for the whole system.
 #
-Set-ExecutionPolicy Unrestricted
+Set-ExecutionPolicy Unrestricted -Force
 
 #
 # Install required DSC modules before we get started. 
