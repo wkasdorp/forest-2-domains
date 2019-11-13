@@ -12,4 +12,4 @@ Install-Module -Name ComputerManagementDSC -Force
 Install-Module -Name xActiveDirectory -Force
 Install-Module -Name xNetworking -Force
 Install-Module -Name xStorage -Force
-Install-Module -Name xDisk -Force
+
