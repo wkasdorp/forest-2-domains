@@ -42,7 +42,7 @@ Write-Verbose "Converting all to manually managed"
 wmic computersystem set AutomaticManagedPagefile=False
 
 Write-Verbose "Configuring swapfile for D:"
-& 'wmic' 'pagefileset' 'create' "name=`"d:\pagefile.sys`",InitialSize=$swapSizeMB,MaximumSize=$swapSizeMB"
+& 'wmic' 'pagefileset' 'create' "name=`"d:\pagefile.sys`",InitialSize=2048,MaximumSize=$swapSizeMB"
 
 Write-Verbose "Post settings for the swapfile(s)"
 wmic pagefile list /format:list
