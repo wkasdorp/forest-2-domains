@@ -56,7 +56,6 @@
         "Standard_A1_v2",
         "Standard_A2_v2",
         "Standard_A3",
-        "Standard_B1ms",
         "Standard_B2s",
         "Standard_B2ms",
         "Standard_B4ms",
@@ -68,7 +67,7 @@
         "Standard_DS3_v2"
       ],
       "metadata": {
-        "description": "The size and type of the VM. *_DS* or *s types support Premium Disks."
+        "description": "The size and type of the VM. *_DS* or *s types support Premium Disks. Hint: the DS* series seem most reliable for this complex template."
       },
       "defaultValue": "Standard_DS1_v2"
     },
@@ -92,7 +91,7 @@
         "Premium_LRS"
       ],
       "metadata": {
-        "description": "The Storage type of the data Disks. Use Premium_LRS only with *s or *DS* VM types."
+        "description": "The Storage type of the data Disks. Use Premium_LRS only with *s or *DS* VM types. Warning: non-premium may be too slow."
       }
     },
     "virtualNetworkName": {
