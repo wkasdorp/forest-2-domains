@@ -50,8 +50,12 @@ DCs in each domain, a small IP space of 10.0.0.0/22 (meaning 10.0.0.0 up
 to 10.0.3.255), etc. Each VM will have the AD-related management tools installed.
 By default, the VMs are of type DS1_v2, meaning 3.5 GB of 
 memory and one CPU core. This is plenty for a simple Active 
-Directory. The disk type defaults to Standard SSD, which is low latency but also
-low IOPS. This is fine for Active Directory.
+Directory. 
+
+**Note**: testing shows that slower disks such as Standard_LRS or StandardSSD_LRS are too slow for reliable DSC. This is because Server 2016 and 2019 are very busy directly after deployment
+and need all disk performance that they can get. So, for best results use _Premium_LRS_ for now, with VMs that
+support premium disks.
+
 The only thing you really need to do is to supply an administrator name and 
 password. Make sure it is 8 characters or more, and complex. You know 
 the drill. 
@@ -147,7 +151,7 @@ New features:
 New Features:
 
 * Added B-series (burstable) VM, very suitable to run DCs cheaply. 
-* Added Standard SSD disks (now default), and made the choice for disk type explicit. This type is well suited for typical DC performance. 
+* Added Standard SSD disks, and made the choice for disk type explicit. 
 * Added the possibilty to deploy to a location different to that of the Resource Group.
 * general cleanup: updated all APIs to the most recent ones, updated DSC modules to the latest.
 
